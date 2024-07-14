@@ -72,10 +72,10 @@
     return map(dictFunctor)($$const(unit));
   };
   var voidLeft = function(dictFunctor) {
-    var map18 = map(dictFunctor);
+    var map19 = map(dictFunctor);
     return function(f) {
       return function(x) {
-        return map18($$const(x))(f);
+        return map19($$const(x))(f);
       };
     };
   };
@@ -90,10 +90,10 @@
   };
   var applySecond = function(dictApply) {
     var apply1 = apply(dictApply);
-    var map18 = map(dictApply.Functor0());
+    var map19 = map(dictApply.Functor0());
     return function(a2) {
       return function(b2) {
-        return apply1(map18($$const(identity2))(a2))(b2);
+        return apply1(map19($$const(identity2))(a2))(b2);
       };
     };
   };
@@ -103,7 +103,7 @@
     return dict.pure;
   };
   var unless = function(dictApplicative) {
-    var pure13 = pure(dictApplicative);
+    var pure14 = pure(dictApplicative);
     return function(v) {
       return function(v1) {
         if (!v) {
@@ -111,7 +111,7 @@
         }
         ;
         if (v) {
-          return pure13(unit);
+          return pure14(unit);
         }
         ;
         throw new Error("Failed pattern match at Control.Applicative (line 68, column 1 - line 68, column 65): " + [v.constructor.name, v1.constructor.name]);
@@ -119,7 +119,7 @@
     };
   };
   var when = function(dictApplicative) {
-    var pure13 = pure(dictApplicative);
+    var pure14 = pure(dictApplicative);
     return function(v) {
       return function(v1) {
         if (v) {
@@ -127,7 +127,7 @@
         }
         ;
         if (!v) {
-          return pure13(unit);
+          return pure14(unit);
         }
         ;
         throw new Error("Failed pattern match at Control.Applicative (line 63, column 1 - line 63, column 63): " + [v.constructor.name, v1.constructor.name]);
@@ -136,10 +136,10 @@
   };
   var liftA1 = function(dictApplicative) {
     var apply2 = apply(dictApplicative.Apply0());
-    var pure13 = pure(dictApplicative);
+    var pure14 = pure(dictApplicative);
     return function(f) {
       return function(a2) {
-        return apply2(pure13(f))(a2);
+        return apply2(pure14(f))(a2);
       };
     };
   };
@@ -287,6 +287,21 @@
     };
     return Just2;
   }();
+  var maybe$prime = function(v) {
+    return function(v1) {
+      return function(v2) {
+        if (v2 instanceof Nothing) {
+          return v(unit);
+        }
+        ;
+        if (v2 instanceof Just) {
+          return v1(v2.value0);
+        }
+        ;
+        throw new Error("Failed pattern match at Data.Maybe (line 250, column 1 - line 250, column 62): " + [v.constructor.name, v1.constructor.name, v2.constructor.name]);
+      };
+    };
+  };
   var maybe = function(v) {
     return function(v1) {
       return function(v2) {
@@ -1593,23 +1608,23 @@
 
   // output/Control.Monad/index.js
   var unlessM = function(dictMonad) {
-    var bind5 = bind(dictMonad.Bind1());
+    var bind6 = bind(dictMonad.Bind1());
     var unless2 = unless(dictMonad.Applicative0());
     return function(mb) {
       return function(m) {
-        return bind5(mb)(function(b2) {
+        return bind6(mb)(function(b2) {
           return unless2(b2)(m);
         });
       };
     };
   };
   var ap = function(dictMonad) {
-    var bind5 = bind(dictMonad.Bind1());
+    var bind6 = bind(dictMonad.Bind1());
     var pure10 = pure(dictMonad.Applicative0());
     return function(f) {
       return function(a2) {
-        return bind5(f)(function(f$prime) {
-          return bind5(a2)(function(a$prime) {
+        return bind6(f)(function(f$prime) {
+          return bind6(a2)(function(a$prime) {
             return pure10(f$prime(a$prime));
           });
         });
@@ -2524,16 +2539,22 @@
   var throwError = function(dict) {
     return dict.throwError;
   };
+  var monadThrowEffect = {
+    throwError: throwException,
+    Monad0: function() {
+      return monadEffect;
+    }
+  };
   var catchError = function(dict) {
     return dict.catchError;
   };
   var $$try = function(dictMonadError) {
     var catchError1 = catchError(dictMonadError);
     var Monad0 = dictMonadError.MonadThrow0().Monad0();
-    var map18 = map(Monad0.Bind1().Apply0().Functor0());
+    var map19 = map(Monad0.Bind1().Apply0().Functor0());
     var pure10 = pure(Monad0.Applicative0());
     return function(a2) {
-      return catchError1(map18(Right.create)(a2))(function($52) {
+      return catchError1(map19(Right.create)(a2))(function($52) {
         return pure10(Left.create($52));
       });
     };
@@ -3538,18 +3559,18 @@
   };
   var foldFree = function(dictMonadRec) {
     var Monad0 = dictMonadRec.Monad0();
-    var map18 = map(Monad0.Bind1().Apply0().Functor0());
-    var pure13 = pure(Monad0.Applicative0());
+    var map19 = map(Monad0.Bind1().Apply0().Functor0());
+    var pure14 = pure(Monad0.Applicative0());
     var tailRecM4 = tailRecM(dictMonadRec);
     return function(k) {
       var go2 = function(f) {
         var v = toView(f);
         if (v instanceof Return) {
-          return map18(Done.create)(pure13(v.value0));
+          return map19(Done.create)(pure14(v.value0));
         }
         ;
         if (v instanceof Bind) {
-          return map18(function($199) {
+          return map19(function($199) {
             return Loop.create(v.value1($199));
           })(k(v.value0));
         }
@@ -5149,6 +5170,9 @@
   };
 
   // output/Web.HTML.HTMLDocument/foreign.js
+  function _body(doc) {
+    return doc.body;
+  }
   function _readyState(doc) {
     return doc.readyState;
   }
@@ -5197,6 +5221,7 @@
   // output/Web.HTML.HTMLDocument/index.js
   var map9 = /* @__PURE__ */ map(functorEffect);
   var toParentNode = unsafeCoerce2;
+  var toNonElementParentNode = unsafeCoerce2;
   var toDocument = unsafeCoerce2;
   var setTitle = function(newTitle) {
     return function(doc) {
@@ -5213,6 +5238,11 @@
       };
     }())(function() {
       return _readyState(doc);
+    });
+  };
+  var body = function(doc) {
+    return map9(toMaybe)(function() {
+      return _body(doc);
     });
   };
 
@@ -5284,8 +5314,8 @@
     };
   });
   var awaitBody = /* @__PURE__ */ discard2(bindAff)(awaitLoad)(function() {
-    return bind3(selectElement("body"))(function(body2) {
-      return maybe(throwError2(error("Could not find body")))(pure5)(body2);
+    return bind3(selectElement("body"))(function(body3) {
+      return maybe(throwError2(error("Could not find body")))(pure5)(body3);
     });
   });
 
@@ -6233,6 +6263,25 @@
     };
   };
 
+  // output/Web.DOM.NonElementParentNode/foreign.js
+  function _getElementById(id2) {
+    return function(node) {
+      return function() {
+        return node.getElementById(id2);
+      };
+    };
+  }
+
+  // output/Web.DOM.NonElementParentNode/index.js
+  var map18 = /* @__PURE__ */ map(functorEffect);
+  var getElementById = function(eid) {
+    var $2 = map18(toMaybe);
+    var $3 = _getElementById(eid);
+    return function($4) {
+      return $2($3($4));
+    };
+  };
+
   // output/Page/index.js
   var slot_2 = /* @__PURE__ */ slot_()({
     reflectSymbol: function() {
@@ -6242,7 +6291,10 @@
   var discard5 = /* @__PURE__ */ discard(discardUnit)(bindHalogenM);
   var liftEffect7 = /* @__PURE__ */ liftEffect(/* @__PURE__ */ monadEffectHalogenM(monadEffectAff));
   var bindFlipped8 = /* @__PURE__ */ bindFlipped(bindEffect);
-  var pure9 = /* @__PURE__ */ pure(applicativeHalogenM);
+  var bind5 = /* @__PURE__ */ bind(bindEffect);
+  var throwError3 = /* @__PURE__ */ throwError(monadThrowEffect);
+  var pure9 = /* @__PURE__ */ pure(applicativeEffect);
+  var pure13 = /* @__PURE__ */ pure(applicativeHalogenM);
   var bindFlipped12 = /* @__PURE__ */ bindFlipped(bindAff);
   var Initialize2 = /* @__PURE__ */ function() {
     function Initialize3() {
@@ -6261,7 +6313,14 @@
       };
       var handleAction = function(v1) {
         return discard5(liftEffect7(bindFlipped8(setTitle(v.title))(bindFlipped8(document)(windowImpl))))(function() {
-          return pure9(unit);
+          return discard5(liftEffect7(function __do2() {
+            var document2 = bindFlipped8(document)(windowImpl)();
+            var body3 = bind5(bindFlipped8(body)(bindFlipped8(document)(windowImpl)))(maybe$prime($$const(throwError3(error("no body"))))(pure9))();
+            var e = bind5(getElementById("static_content")(toNonElementParentNode(document2)))(maybe$prime($$const(throwError3(error("couldn't find #static_content"))))(pure9))();
+            return removeChild2(toNode(e))(toNode2(body3))();
+          }))(function() {
+            return pure13(unit);
+          });
         });
       };
       var $$eval = mkEval({
