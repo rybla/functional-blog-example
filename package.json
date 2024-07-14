@@ -1,0 +1,20 @@
+{
+  "name": "functional-blog-example",
+  "author": "Henry Blanchette",
+  "license": "ISC",
+  "type": "module",
+  "scripts": {
+    "build": "spago build",
+    
+    "compile": "pnpm compile:GenerateStaticAssets && pnpm compile:superbuilder",
+    "compile:GenerateStaticAssets": "spago run --main GenerateStaticAssets",
+    "compile:superbuilder": "node superbuilder.js",
+    
+    "serve": "esbuild main.js --bundle --outfile=./docs/main.js --servedir=./docs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.23.0",
+    "purescript": "0.15.16-1",
+    "spago": "^0.93.37"
+  }
+}
