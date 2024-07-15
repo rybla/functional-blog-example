@@ -10,12 +10,13 @@ import Control.Monad.Error.Class (throwError)
 import Data.Argonaut (class DecodeJson, class EncodeJson)
 import Data.Argonaut.Decode.Generic (genericDecodeJson)
 import Data.Argonaut.Encode.Generic (genericEncodeJson)
-import Data.Either (Either)
+import Data.Either (Either(..))
 import Data.Generic.Rep (class Generic)
 import Data.Map (Map)
 import Data.Map as Map
 import Data.Maybe (Maybe(..))
 import Data.Tuple.Nested ((/\))
+import Halogen.HTML as HH
 import Partial.Unsafe (unsafeCrashWith)
 import Type.Prelude (Proxy(..))
 
@@ -27,7 +28,7 @@ type Result = Either String
 -- SomeContentBuilder
 
 data SomeContentBuilder
-  = Named String
+  = Include String
   | Styled SomeStyleBuilder SomeContentBuilder
   | Grouped SomeGroupBuilder SomeContentListBuilder
 
@@ -39,9 +40,14 @@ instance EncodeJson SomeContentBuilder where
 instance DecodeJson SomeContentBuilder where
   decodeJson x = genericDecodeJson x
 
+renderSomeContentBuilder :: SomeContentBuilder -> ContentHTML
+renderSomeContentBuilder = fromSomeContentBuilder >>> case _ of
+  Left err -> HH.span [] [ HH.text ("[error] invalid SomeContentBuilder: " <> err) ]
+  Right some_content -> some_content # renderFinalSomeContent
+
 fromSomeContentBuilder :: SomeContentBuilder -> Result SomeContent
 fromSomeContentBuilder = case _ of
-  Named name -> fromNamedSomeContentBuilder name
+  Include name -> fromIncludeSomeContentBuilder name
   Grouped group_builder list_builder -> do
     some_group <- group_builder # fromSomeGroupBuilder
     some_list <- list_builder # fromSomeContentListBuilder
@@ -67,6 +73,8 @@ proxyStyled _ _ = Proxy
 data SomeContentListBuilder
   = Nil
   | Cons SomeContentBuilder SomeContentListBuilder
+
+infixr 6 Cons as :
 
 derive instance Generic SomeContentListBuilder _
 
@@ -127,12 +135,12 @@ fromSomeStyleBuilder = case _ of
   Quote -> pure (mkSomeStyle (Proxy :: Proxy Quote))
 
 -- =============================================================================
--- Named Content
+-- Include Content
 
 -- This is the function the looks up content by name. These should correspond to
 -- the actual names of the singleton types that define the content.
-fromNamedSomeContentBuilder :: String -> Result SomeContent
-fromNamedSomeContentBuilder name = case Map.lookup name namedSomeContent of
+fromIncludeSomeContentBuilder :: String -> Result SomeContent
+fromIncludeSomeContentBuilder name = case Map.lookup name namedSomeContent of
   Nothing -> throwError ("unknown name: " <> show name)
   Just some_content -> pure some_content
 
