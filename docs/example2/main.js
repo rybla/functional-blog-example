@@ -2635,7 +2635,21 @@
     Initialize_ContentAction2.value = new Initialize_ContentAction2();
     return Initialize_ContentAction2;
   }();
-  var contentListContentKindNil = {
+  var groupColumn = {
+    renderGroup: function(dictMonadState) {
+      var Monad0 = dictMonadState.Monad0();
+      var bind6 = bind(Monad0.Bind1());
+      var pure10 = pure(Monad0.Applicative0());
+      return function(v) {
+        return function(mhs) {
+          return bind6(mhs)(function(hs) {
+            return pure10(div2([class_("column"), style2(["display: flex", "flex-direction: column"])])(fromFoldable3(hs)));
+          });
+        };
+      };
+    }
+  };
+  var contentListNil = {
     renderContentList: function(dictMonadState) {
       var pure10 = pure(dictMonadState.Monad0().Applicative0());
       return function(_cs) {
@@ -2650,29 +2664,31 @@
       });
     };
   };
+  var renderGroup = function(dict) {
+    return dict.renderGroup;
+  };
   var renderContentList = function(dict) {
     return dict.renderContentList;
   };
-  var contentColumn = function(dictContentList) {
-    var renderContentList1 = renderContentList(dictContentList);
-    return {
-      renderContent: function(dictMonadState) {
-        var Monad0 = dictMonadState.Monad0();
-        var bind6 = bind(Monad0.Bind1());
-        var renderContentList2 = renderContentList1(dictMonadState);
-        var pure10 = pure(Monad0.Applicative0());
-        return function(v) {
-          return bind6(renderContentList2($$Proxy.value))(function(hs) {
-            return pure10(div2([class_("column"), style2(["display: flex", "flex-direction: column"])])(fromFoldable3(hs)));
-          });
-        };
-      }
+  var contentGrouped = function(dictGroup) {
+    var renderGroup1 = renderGroup(dictGroup);
+    return function(dictContentList) {
+      var renderContentList1 = renderContentList(dictContentList);
+      return {
+        renderContent: function(dictMonadState) {
+          var renderGroup2 = renderGroup1(dictMonadState);
+          var renderContentList2 = renderContentList1(dictMonadState);
+          return function(v) {
+            return renderGroup2($$Proxy.value)(renderContentList2($$Proxy.value));
+          };
+        }
+      };
     };
   };
   var renderContent = function(dict) {
     return dict.renderContent;
   };
-  var contentListContentKindCon = function(dictContent) {
+  var contentListCons = function(dictContent) {
     var renderContent1 = renderContent(dictContent);
     return function(dictContentList) {
       var renderContentList1 = renderContentList(dictContentList);
@@ -2695,9 +2711,9 @@
     };
   };
   var mkSomeContent = function(dictContent) {
-    return function(pc) {
+    return function(x) {
       return function(k) {
-        return k(dictContent)(pc);
+        return k(dictContent)(x);
       };
     };
   };
@@ -2705,9 +2721,9 @@
     widgetSlotId: 0
   });
   var renderFinalContent = function(dictContent) {
-    var $46 = renderContent(dictContent)(monadStateStateT2);
-    return function($47) {
-      return finalizeContent($46($47));
+    var $125 = renderContent(dictContent)(monadStateStateT2);
+    return function($126) {
+      return finalizeContent($125($126));
     };
   };
   var renderFinalSomeContent = /* @__PURE__ */ unSomeContent(function(dictContent) {
@@ -6483,7 +6499,7 @@
     return {
       title: "Example2",
       static_content: "This is a placeholder for Example2.",
-      content: mkSomeContent(contentColumn(contentListContentKindCon(contentNoteA)(contentListContentKindCon(contentNoteB)(contentListContentKindNil))))($$Proxy.value)
+      content: mkSomeContent(contentGrouped(groupColumn)(contentListCons(contentNoteA)(contentListCons(contentNoteB)(contentListNil))))($$Proxy.value)
     };
   }();
   var start_client2 = /* @__PURE__ */ start_client(spec);

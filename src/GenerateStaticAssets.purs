@@ -57,7 +57,12 @@ start_client()
     -- generate script to generate public assets
     --   generate Javascript that will generate the static assets
     --   this needs to be a generated script because I can't dynamically import files in Purescript (which makes sense of course)
-    let public_dir = "docs/" <> props.public_path <> "/"
+    let
+      public_dir =
+        if props.public_path == "index" then
+          "docs/"
+        else
+          "docs/" <> props.public_path <> "/"
     flip catchError (const (pure unit)) do
       FS.mkdir public_dir
       Console.log ("made  directory   \"" <> public_dir <> "\"")

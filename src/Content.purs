@@ -1,17 +1,20 @@
 module Content where
 
 import Prelude
+import Prim hiding (Row)
 
-import Control.Monad.State (class MonadState, State, evalState)
+import Control.Monad.State (class MonadState, State, evalState, get, modify_)
 import Data.Array as Array
 import Data.Identity (Identity)
 import Data.List (List(..), (:))
+import Data.Newtype (class Newtype, over)
 import Effect.Aff (Aff)
-import Halogen (ComponentHTML, Slot)
+import Halogen (Component, ComponentHTML, Slot)
 import Halogen as H
 import Halogen.HTML as HH
 import Halogen.HTML.Properties as HP
 import HalogenUtils as HU
+import Record as Record
 import Type.Proxy (Proxy(..))
 
 -- =============================================================================
@@ -21,88 +24,185 @@ foreign import data ContentKind :: Type
 
 class Content (c :: ContentKind) where
   renderContent
-    :: forall m slots
-     . MonadState ContentState m
+    :: forall m
+     . MonadState ContentEnv m
     => Proxy c
-    -> m (ContentHTML slots)
+    -> m ContentHTML
 
-finalizeContent :: forall a. State ContentState a -> a
+finalizeContent :: forall a. State ContentEnv a -> a
 finalizeContent = flip evalState
   { widgetSlotId: WidgetSlotId 0
   }
 
-renderFinalContent :: forall c slots. Content c => Proxy c -> ContentHTML slots
+renderFinalContent :: forall c. Content c => Proxy c -> ContentHTML
 renderFinalContent = renderContent >>> finalizeContent
 
 -- =============================================================================
 -- related types
 
-type ContentHTML slots = ComponentHTML ContentAction (ContentSlots slots) Aff
+type ContentHTML = ComponentHTML ContentAction ContentSlots Aff
 
-type ContentState =
-  { widgetSlotId :: WidgetSlotId
-  }
-
-data ContentAction
-  = Initialize_ContentAction
+data ContentAction = Initialize_ContentAction
 
 newtype WidgetSlotId = WidgetSlotId Int
 
-type ContentSlots (slots :: Row Type) = (widget :: WidgetSlot WidgetSlotId | slots)
+derive instance Newtype WidgetSlotId _
+derive newtype instance Show WidgetSlotId
+derive newtype instance Eq WidgetSlotId
+derive newtype instance Ord WidgetSlotId
+
+type ContentSlots = (widget :: WidgetSlot WidgetSlotId)
 _widget = Proxy :: Proxy "widget"
 
 type WidgetSlot slotId = Slot Identity Void slotId
 
-newtype SomeContent = SomeContent (forall r. SomeContentK r -> r)
-type SomeContentK r = forall c. Content c => Proxy c -> r
+type WidgetComponent = Component Identity Unit Void Aff
+
+-- =============================================================================
+-- ContentEnv
+
+type ContentEnv =
+  { widgetSlotId :: WidgetSlotId
+  }
+
+_widgetSlotId = Proxy :: Proxy "widgetSlotId"
+
+nextWidgetSlotId :: forall m. MonadState ContentEnv m => m WidgetSlotId
+nextWidgetSlotId = do
+  { widgetSlotId } <- get
+  modify_ (Record.modify _widgetSlotId (over WidgetSlotId (_ + 1)))
+  pure widgetSlotId
 
 -- =============================================================================
 
+newtype SomeContent = SomeContent (forall r. SomeContentK r -> r)
+type SomeContentK r = forall content. Content content => Proxy content -> r
+
 mkSomeContent :: SomeContentK SomeContent
-mkSomeContent pc = SomeContent \k -> k pc
+mkSomeContent x = SomeContent \k -> k x
 
 unSomeContent :: forall r. SomeContentK r -> SomeContent -> r
 unSomeContent k1 (SomeContent k2) = k2 k1
 
-renderFinalSomeContent :: forall slots. SomeContent -> ContentHTML slots
+renderFinalSomeContent :: SomeContent -> ContentHTML
 renderFinalSomeContent = unSomeContent renderFinalContent
 
 -- =============================================================================
 -- Content combinators
 
+-- TODO: lists are annoying, so lets hold off on that for now (even though, yes,
+-- they're critically important for any real demo)
+
 foreign import data ContentListKind :: Type
-foreign import data ContentKindCons :: ContentKind -> ContentListKind -> ContentListKind
-foreign import data ContentKindNil :: ContentListKind
+foreign import data Cons :: ContentKind -> ContentListKind -> ContentListKind
+foreign import data Nil :: ContentListKind
 
-type Nil = ContentKindNil
-
-infixr 6 type ContentKindCons as :
+infixr 6 type Cons as :
 
 class ContentList (cs :: ContentListKind) where
   renderContentList
-    :: forall m slots
-     . MonadState ContentState m
+    :: forall m
+     . MonadState ContentEnv m
     => Proxy cs
-    -> m (List (ContentHTML slots))
+    -> m (List ContentHTML)
 
-instance ContentList ContentKindNil where
+newtype SomeContentList = SomeContentList (forall r. SomeContentListK r -> r)
+type SomeContentListK r = forall cs. ContentList cs => Proxy cs -> r
+
+mkSomeContentList :: SomeContentListK SomeContentList
+mkSomeContentList x = SomeContentList \k -> k x
+
+unSomeContentList :: forall r. SomeContentListK r -> SomeContentList -> r
+unSomeContentList k1 (SomeContentList k2) = k2 k1
+
+instance ContentList Nil where
   renderContentList _cs = pure Nil
 
-instance (Content c, ContentList cs) => ContentList (ContentKindCons c cs) where
+instance (Content c, ContentList cs) => ContentList (Cons c cs) where
   renderContentList _cs = do
     h <- renderContent (Proxy :: Proxy c)
     hs <- renderContentList (Proxy :: Proxy cs)
     pure (h : hs)
 
-foreign import data Column :: ContentListKind -> ContentKind
+instance (Group group, ContentList cs) => Content (Grouped group cs) where
+  renderContent _ = renderGroup (Proxy :: Proxy group) (renderContentList (Proxy :: Proxy cs))
 
-instance ContentList cs => Content (Column cs) where
-  renderContent _ = do
-    hs <- renderContentList (Proxy :: Proxy cs)
+foreign import data Grouped :: GroupKind -> ContentListKind -> ContentKind
+
+foreign import data GroupKind :: Type
+foreign import data Column :: GroupKind
+foreign import data Row :: GroupKind
+
+class Group (group :: GroupKind) where
+  renderGroup
+    :: forall m
+     . MonadState ContentEnv m
+    => Proxy group
+    -> m (List ContentHTML)
+    -> m ContentHTML
+
+newtype SomeGroup = SomeGroup (forall r. SomeGroupK r -> r)
+type SomeGroupK r = forall group. Group group => Proxy group -> r
+
+mkSomeGroup :: SomeGroupK SomeGroup
+mkSomeGroup x = SomeGroup \k -> k x
+
+unSomeGroup :: forall r. SomeGroupK r -> SomeGroup -> r
+unSomeGroup k1 (SomeGroup k2) = k2 k1
+
+instance Group Column where
+  renderGroup _ mhs = do
+    hs <- mhs
     pure
       ( HH.div
           [ HP.class_ (H.ClassName "column")
           , HU.style [ "display: flex", "flex-direction: column" ]
           ]
           (hs # Array.fromFoldable)
+      )
+
+instance Group Row where
+  renderGroup _ mhs = do
+    hs <- mhs
+    pure
+      ( HH.div
+          [ HP.class_ (H.ClassName "row")
+          , HU.style [ "display: flex", "flex-direction: row" ]
+          ]
+          (hs # Array.fromFoldable)
+      )
+
+foreign import data Styled :: StyleKind -> ContentKind -> ContentKind
+
+instance (Content content, Style style) => Content (Styled style content) where
+  renderContent _ = renderStyleContent (Proxy :: Proxy style) (renderContent (Proxy :: Proxy content))
+
+foreign import data StyleKind :: Type
+
+class Style (style :: StyleKind) where
+  renderStyleContent
+    :: forall m
+     . MonadState ContentEnv m
+    => Proxy style
+    -> m ContentHTML
+    -> m ContentHTML
+
+newtype SomeStyle = SomeStyle (forall r. SomeStyleK r -> r)
+type SomeStyleK r = forall style. Style style => Proxy style -> r
+
+mkSomeStyle :: SomeStyleK SomeStyle
+mkSomeStyle x = SomeStyle \k -> k x
+
+unSomeStyle :: forall r. SomeStyleK r -> SomeStyle -> r
+unSomeStyle k1 (SomeStyle k2) = k2 k1
+
+foreign import data Quote :: StyleKind
+
+instance Style Quote where
+  renderStyleContent _ mh = do
+    h <- mh
+    pure
+      ( HH.div
+          [ HU.style [ "box-shadow: 0 0 1em 0 black" ] ]
+          [ h ]
       )
