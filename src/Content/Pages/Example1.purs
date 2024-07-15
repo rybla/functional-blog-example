@@ -3,9 +3,12 @@ module Content.Pages.Example1 where
 
 import Prelude
 
+import Content (mkSomeContent)
+import Content.Notes.NoteA (NoteA)
 import Halogen (defaultEval, mkComponent, mkEval)
 import Halogen.HTML as HH
 import Page as Page
+import Type.Proxy (Proxy(..))
 
 -- =============================================================================
 
@@ -18,14 +21,5 @@ spec :: Page.Spec
 spec = Page.Spec
   { title: "Example1"
   , static_content: "This is a placeholder."
-  , component
+  , content: mkSomeContent (Proxy :: Proxy NoteA)
   }
-
-component = mkComponent { initialState, eval, render }
-  where
-  initialState _input = {}
-
-  eval = mkEval defaultEval
-
-  render _state = HH.div [] [ HH.text "This is the page Example1" ]
-

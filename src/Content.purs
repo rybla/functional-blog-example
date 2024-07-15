@@ -44,6 +44,7 @@ type ContentState =
   }
 
 data ContentAction
+  = Initialize_ContentAction
 
 newtype WidgetSlotId = WidgetSlotId Int
 
@@ -62,6 +63,9 @@ mkSomeContent pc = SomeContent \k -> k pc
 
 unSomeContent :: forall r. SomeContentK r -> SomeContent -> r
 unSomeContent k1 (SomeContent k2) = k2 k1
+
+renderFinalSomeContent :: forall slots. SomeContent -> ContentHTML slots
+renderFinalSomeContent = unSomeContent renderFinalContent
 
 -- =============================================================================
 -- Content combinators

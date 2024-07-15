@@ -2,6 +2,7 @@ module Page where
 
 import Prelude
 
+import Content (ContentAction(..), SomeContent(..), renderFinalSomeContent, unSomeContent)
 import Data.Identity (Identity)
 import Data.Maybe (Maybe(..), maybe')
 import Effect (Effect)
@@ -27,7 +28,8 @@ import Web.HTML.Window as Window
 newtype Spec = Spec
   { title :: String
   , static_content :: String
-  , component :: Component Identity Unit Void Aff
+  -- , component :: Component Identity Unit Void Aff
+  , content :: SomeContent
   }
 
 -- =============================================================================
@@ -61,8 +63,6 @@ static_content (Spec spec) =
 -- =============================================================================
 -- start_client
 
-data Action = Initialize
-
 start_client :: Spec -> Effect Unit
 start_client (Spec spec) = runHalogenAff do runUI component {} =<< awaitBody
   where
@@ -70,10 +70,10 @@ start_client (Spec spec) = runHalogenAff do runUI component {} =<< awaitBody
     where
     initialState _input = {}
 
-    eval = mkEval defaultEval { initialize = Just Initialize, handleAction = handleAction }
+    eval = mkEval defaultEval { initialize = Just Initialize_ContentAction, handleAction = handleAction }
 
     handleAction = case _ of
-      Initialize -> do
+      Initialize_ContentAction -> do
         -- set title of document
         (setTitle spec.title =<< document =<< window) # liftEffect
         -- remove static_content
@@ -81,7 +81,7 @@ start_client (Spec spec) = runHalogenAff do runUI component {} =<< awaitBody
           document <- Window.document =<< HTML.window
           body <- (HTMLDocument.body =<< Window.document =<< HTML.window) >>= maybe' (const (throwError (error "no body"))) pure
           e <- getElementById "static_content" (document # HTMLDocument.toNonElementParentNode) >>= maybe' (const (throwError (error "couldn't find #static_content"))) pure
-          Node.removeChild (e # Element.toNode) (body # HTMLElement.toNode) 
+          Node.removeChild (e # Element.toNode) (body # HTMLElement.toNode)
         pure unit
 
-    render _state = HH.slot_ (Proxy :: Proxy "component") unit spec.component unit
+    render _state = spec.content # renderFinalSomeContent

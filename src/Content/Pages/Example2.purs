@@ -23,17 +23,7 @@ spec :: Page.Spec
 spec = Page.Spec
   { title: "Example2"
   , static_content: "This is a placeholder for Example2."
-  , component
+  , content: mkSomeContent (Proxy :: Proxy (Column (NoteA : NoteB : Nil)))
   }
 
-component = mkComponent { initialState, eval, render }
-  where
-  initialState _input = {}
-
-  eval = mkEval defaultEval
-
-  render _state = HH.div []
-    [ HH.p_ [ HH.text "This is the page Example2" ]
-    , renderFinalContent (Proxy :: Proxy (Column (NoteA : NoteB : Nil)))
-    ]
 
