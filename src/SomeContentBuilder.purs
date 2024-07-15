@@ -11,13 +11,14 @@ import Data.Argonaut (class DecodeJson, class EncodeJson)
 import Data.Argonaut.Decode.Generic (genericDecodeJson)
 import Data.Argonaut.Encode.Generic (genericEncodeJson)
 import Data.Either (Either(..))
+import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
 import Data.Map (Map)
 import Data.Map as Map
 import Data.Maybe (Maybe(..))
+import Data.Show.Generic (genericShow)
 import Data.Tuple.Nested ((/\))
 import Halogen.HTML as HH
-import Partial.Unsafe (unsafeCrashWith)
 import Type.Prelude (Proxy(..))
 
 -- =============================================================================
@@ -31,6 +32,7 @@ data SomeContentBuilder
   = Include String
   | Styled SomeStyleBuilder SomeContentBuilder
   | Grouped SomeGroupBuilder SomeContentListBuilder
+  | Hole
 
 derive instance Generic SomeContentBuilder _
 
@@ -60,6 +62,7 @@ fromSomeContentBuilder = case _ of
     some_content # unSomeContent \content ->
       some_style # unSomeStyle \style ->
         pure (mkSomeContent (proxyStyled style content))
+  Hole -> pure (mkSomeContent (Proxy :: Proxy Hole))
 
 proxyGrouped :: forall group list. Proxy group -> Proxy list -> Proxy (Grouped group list)
 proxyGrouped _ _ = Proxy
@@ -106,6 +109,12 @@ data SomeGroupBuilder
 
 derive instance Generic SomeGroupBuilder _
 
+instance Show SomeGroupBuilder where
+  show x = genericShow x
+
+instance Eq SomeGroupBuilder where
+  eq x = genericEq x
+
 instance EncodeJson SomeGroupBuilder where
   encodeJson x = genericEncodeJson x
 
@@ -120,9 +129,15 @@ fromSomeGroupBuilder = case _ of
 -- =============================================================================
 -- SomeStyleBuilder
 
-data SomeStyleBuilder = Quote
+data SomeStyleBuilder = Quote | Code
 
 derive instance Generic SomeStyleBuilder _
+
+instance Show SomeStyleBuilder where
+  show x = genericShow x
+
+instance Eq SomeStyleBuilder where
+  eq x = genericEq x
 
 instance EncodeJson SomeStyleBuilder where
   encodeJson x = genericEncodeJson x
@@ -133,6 +148,7 @@ instance DecodeJson SomeStyleBuilder where
 fromSomeStyleBuilder :: SomeStyleBuilder -> Result SomeStyle
 fromSomeStyleBuilder = case _ of
   Quote -> pure (mkSomeStyle (Proxy :: Proxy Quote))
+  Code -> pure (mkSomeStyle (Proxy :: Proxy Code))
 
 -- =============================================================================
 -- Include Content

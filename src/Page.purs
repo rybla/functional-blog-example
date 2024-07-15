@@ -47,6 +47,9 @@ static_content (Spec spec) =
   <title>""" <> spec.title
     <>
       """</title>
+  <style>
+    html, body { margin: 0; padding: 0 }
+  </style>
   <script src="main.js"></script>
 </head>
 

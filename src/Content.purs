@@ -156,7 +156,7 @@ instance Group Column where
     pure
       ( HH.div
           [ HP.class_ (H.ClassName "column")
-          , HU.style [ "display: flex", "flex-direction: column" ]
+          , HU.style [ "display: flex", "flex-direction: column", "gap: 0.5em" ]
           ]
           (hs # Array.fromFoldable)
       )
@@ -167,7 +167,7 @@ instance Group Row where
     pure
       ( HH.div
           [ HP.class_ (H.ClassName "row")
-          , HU.style [ "display: flex", "flex-direction: row" ]
+          , HU.style [ "display: flex", "flex-direction: row", "gap: 0.5em" ]
           ]
           (hs # Array.fromFoldable)
       )
@@ -197,12 +197,28 @@ unSomeStyle :: forall r. SomeStyleK r -> SomeStyle -> r
 unSomeStyle k1 (SomeStyle k2) = k2 k1
 
 foreign import data Quote :: StyleKind
+foreign import data Code :: StyleKind
 
 instance Style Quote where
   renderStyleContent _ mh = do
     h <- mh
     pure
       ( HH.div
-          [ HU.style [ "box-shadow: 0 0 1em 0 black" ] ]
+          [ HU.style [ "box-shadow: 0 0 1em 0 black", "padding: 0.5em", "font-style: italic" ] ]
           [ h ]
       )
+
+instance Style Code where
+  renderStyleContent _ mh = do
+    h <- mh
+    pure
+      ( HH.div
+          [ HU.style [ "box-shadow: 0 0 1em 0 black", "padding: 0.5em", "font-family: monospace" ] ]
+          [ h ]
+      )
+
+foreign import data Hole :: ContentKind
+
+instance Content Hole where
+  renderContent _ = pure (HH.span [] [ HH.text "<Hole>" ])
+

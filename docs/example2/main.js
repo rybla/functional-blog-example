@@ -2721,9 +2721,9 @@
     widgetSlotId: 0
   });
   var renderFinalContent = function(dictContent) {
-    var $125 = renderContent(dictContent)(monadStateStateT2);
-    return function($126) {
-      return finalizeContent($125($126));
+    var $131 = renderContent(dictContent)(monadStateStateT2);
+    return function($132) {
+      return finalizeContent($131($132));
     };
   };
   var renderFinalSomeContent = /* @__PURE__ */ unSomeContent(function(dictContent) {
