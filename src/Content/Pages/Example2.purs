@@ -3,9 +3,14 @@ module Content.Pages.Example2 where
 
 import Prelude
 
+import Content
+import Content.Notes.NoteA (NoteA)
+import Content.Notes.NoteB (NoteB)
+import Data.Identity (Identity)
 import Halogen (defaultEval, mkComponent, mkEval)
 import Halogen.HTML as HH
 import Page as Page
+import Type.Proxy (Proxy(..))
 
 -- =============================================================================
 
@@ -27,5 +32,8 @@ component = mkComponent { initialState, eval, render }
 
   eval = mkEval defaultEval
 
-  render _state = HH.div [] [ HH.text "This is the page Example2" ]
+  render _state = HH.div []
+    [ HH.p_ [ HH.text "This is the page Example2" ]
+    , renderFinalContent (Proxy :: Proxy (Column (NoteA : NoteB : Nil)))
+    ]
 
