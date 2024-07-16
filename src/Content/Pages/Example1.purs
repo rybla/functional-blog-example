@@ -15,6 +15,7 @@ spec :: Page.Spec
 spec = Page.Spec
   { title: "Example1"
   , static_content: "This is a placeholder."
+  , stylesheet_hrefs: [ "../main.css" ]
   , content: mkSomeContent
       ( Proxy
           :: Proxy

@@ -3,13 +3,16 @@ module Page where
 import Prelude
 
 import Content (ContentAction(..), SomeContent(..), renderFinalSomeContent, unSomeContent)
+import Data.Array as Array
 import Data.Identity (Identity)
 import Data.Maybe (Maybe(..), maybe')
 import Effect (Effect)
 import Effect.Aff (Aff, error, throwError)
 import Halogen (Component, defaultEval, liftEffect, mkComponent, mkEval)
+import Halogen as H
 import Halogen.Aff (awaitBody, runHalogenAff)
 import Halogen.HTML as HH
+import Halogen.HTML.Properties as HP
 import Halogen.VDom.Driver (runUI)
 import Type.Proxy (Proxy(..))
 import Web.DOM.Element as Element
@@ -28,7 +31,7 @@ import Web.HTML.Window as Window
 newtype Spec = Spec
   { title :: String
   , static_content :: String
-  -- , component :: Component Identity Unit Void Aff
+  , stylesheet_hrefs :: Array String
   , content :: SomeContent
   }
 
@@ -41,24 +44,29 @@ static_content (Spec spec) =
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>""" <> spec.title
-    <>
-      """</title>
-  <style>
-    html, body { margin: 0; padding: 0 }
-  </style>
-  <script src="main.js"></script>
-</head>
-
 <body>
 <div id="static_content">"""
     <> spec.static_content
     <>
       """</div>
 </body>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>"""
+    <> spec.title
+    <>
+      """</title>
+  <style>
+    html, body { margin: 0; padding: 0 }
+  </style>
+  <script src="main.js"></script>
+  """
+    <> (spec.stylesheet_hrefs # map (\href -> "<link rel=\"stylesheet\" href=\"" <> href <> "\">") # Array.intercalate "\n  ")
+    <>
+      """
+</head>
 
 </html>
 """
@@ -87,4 +95,7 @@ start_client (Spec spec) = runHalogenAff do runUI component {} =<< awaitBody
           Node.removeChild (e # Element.toNode) (body # HTMLElement.toNode)
         pure unit
 
-    render _state = spec.content # renderFinalSomeContent
+    render _state =
+      HH.div
+        [ HP.class_ (H.ClassName "Page") ]
+        (spec.content # renderFinalSomeContent)

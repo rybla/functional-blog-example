@@ -4,6 +4,7 @@ import Content
 import Prelude
 import Prim hiding (Row)
 
+import Content.Notes.LoremIpsum (LoremIpsum, LoremIpsumLong)
 import Content.Notes.NoteA (NoteA)
 import Content.Notes.NoteB (NoteB)
 import Control.Monad.Error.Class (throwError)
@@ -19,7 +20,8 @@ import Data.Maybe (Maybe(..))
 import Data.Show.Generic (genericShow)
 import Data.Tuple.Nested ((/\))
 import Halogen.HTML as HH
-import Type.Prelude (Proxy(..))
+import HalogenUtils as HU
+import Type.Prelude (Proxy(..), reifySymbol)
 
 -- =============================================================================
 
@@ -29,7 +31,8 @@ type Result = Either String
 -- SomeContentBuilder
 
 data SomeContentBuilder
-  = Include String
+  = Literal String
+  | Named String
   | Styled SomeStyleBuilder SomeContentBuilder
   | Grouped SomeGroupBuilder SomeContentListBuilder
   | Hole
@@ -42,14 +45,19 @@ instance EncodeJson SomeContentBuilder where
 instance DecodeJson SomeContentBuilder where
   decodeJson x = genericDecodeJson x
 
-renderSomeContentBuilder :: SomeContentBuilder -> ContentHTML
+renderSomeContentBuilder :: SomeContentBuilder -> Array ContentHTML
 renderSomeContentBuilder = fromSomeContentBuilder >>> case _ of
-  Left err -> HH.span [] [ HH.text ("[error] invalid SomeContentBuilder: " <> err) ]
+  Left err ->
+    [ HH.div
+        [ HU.style [ "padding: 0.5em", "background-color: red" ] ]
+        [ HH.text ("[error] invalid SomeContentBuilder: " <> err) ]
+    ]
   Right some_content -> some_content # renderFinalSomeContent
 
 fromSomeContentBuilder :: SomeContentBuilder -> Result SomeContent
 fromSomeContentBuilder = case _ of
-  Include name -> fromIncludeSomeContentBuilder name
+  Literal str -> reifySymbol str \sym -> pure (mkSomeContent (proxyLiteral sym))
+  Named name -> fromNamedSomeContentBuilder name
   Grouped group_builder list_builder -> do
     some_group <- group_builder # fromSomeGroupBuilder
     some_list <- list_builder # fromSomeContentListBuilder
@@ -63,6 +71,9 @@ fromSomeContentBuilder = case _ of
       some_style # unSomeStyle \style ->
         pure (mkSomeContent (proxyStyled style content))
   Hole -> pure (mkSomeContent (Proxy :: Proxy Hole))
+
+proxyLiteral :: forall sym. Proxy sym -> Proxy (Literal sym)
+proxyLiteral _ = Proxy
 
 proxyGrouped :: forall group list. Proxy group -> Proxy list -> Proxy (Grouped group list)
 proxyGrouped _ _ = Proxy
@@ -129,7 +140,13 @@ fromSomeGroupBuilder = case _ of
 -- =============================================================================
 -- SomeStyleBuilder
 
-data SomeStyleBuilder = Quote | Code
+data SomeStyleBuilder
+  = Title
+  | Section
+  | Subsection
+  | Block
+  | Quote
+  | Code
 
 derive instance Generic SomeStyleBuilder _
 
@@ -147,22 +164,28 @@ instance DecodeJson SomeStyleBuilder where
 
 fromSomeStyleBuilder :: SomeStyleBuilder -> Result SomeStyle
 fromSomeStyleBuilder = case _ of
+  Title -> pure (mkSomeStyle (Proxy :: Proxy Title))
+  Section -> pure (mkSomeStyle (Proxy :: Proxy Section))
+  Subsection -> pure (mkSomeStyle (Proxy :: Proxy Subsection))
+  Block -> pure (mkSomeStyle (Proxy :: Proxy Block))
   Quote -> pure (mkSomeStyle (Proxy :: Proxy Quote))
   Code -> pure (mkSomeStyle (Proxy :: Proxy Code))
 
 -- =============================================================================
--- Include Content
+-- Named Content
 
 -- This is the function the looks up content by name. These should correspond to
 -- the actual names of the singleton types that define the content.
-fromIncludeSomeContentBuilder :: String -> Result SomeContent
-fromIncludeSomeContentBuilder name = case Map.lookup name namedSomeContent of
+fromNamedSomeContentBuilder :: String -> Result SomeContent
+fromNamedSomeContentBuilder name = case Map.lookup name namedSomeContent of
   Nothing -> throwError ("unknown name: " <> show name)
   Just some_content -> pure some_content
 
 namedSomeContent :: Map String SomeContent
 namedSomeContent = Map.fromFoldable
-  [ "NoteA" /\ mkSomeContent (Proxy :: Proxy NoteA)
+  [ "Lorem Ipsum" /\ mkSomeContent (Proxy :: Proxy LoremIpsum)
+  , "Lorem Ipsum Long" /\ mkSomeContent (Proxy :: Proxy LoremIpsumLong)
+  , "NoteA" /\ mkSomeContent (Proxy :: Proxy NoteA)
   , "NoteB" /\ mkSomeContent (Proxy :: Proxy NoteB)
   ]
 

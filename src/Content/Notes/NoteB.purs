@@ -8,4 +8,4 @@ import Halogen.HTML as HH
 foreign import data NoteB :: ContentKind
 
 instance Content NoteB where
-  renderContent _ = pure (HH.span_ [ HH.text "This is NoteB." ])
+  renderContent _ = pure [ HH.div [] [ HH.text "This is NoteB." ] ]

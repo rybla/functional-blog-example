@@ -9,7 +9,7 @@ import Type.Proxy (Proxy(..))
 
 data Note
   = HTML NoteHTML
-  | Include NotePath -- include a note from the registry of pre-defined notes
+  | Named NotePath -- Named a note from the registry of pre-defined notes
   | Group GroupMethod (Array Note)
 
 newtype NotePath = NotePath (Array String)

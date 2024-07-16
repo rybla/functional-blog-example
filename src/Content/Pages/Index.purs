@@ -5,11 +5,8 @@ import Content
 import Prelude
 import SomeContentBuilder
 
-import Control.Monad.State.Class (get, modify_, put)
+import Control.Monad.State.Class (get, put)
 import Data.Argonaut (JsonDecodeError)
-import Data.Argonaut as Argonaut
-import Data.Argonaut.Decode as Argonaut.Decode
-import Data.Argonaut.Encode as Argonaut.Encode
 import Data.Array as Array
 import Data.Bifunctor (bimap)
 import Data.Either (Either(..), isLeft)
@@ -19,23 +16,19 @@ import Data.Int as Int
 import Data.Map as Map
 import Data.Maybe (Maybe(..))
 import Data.Tuple.Nested ((/\))
-import Debug as Debug
 import Effect.Aff (Aff)
-import Effect.Class.Console as Console
 import Effect.Unsafe (unsafePerformEffect)
-import Halogen (Component, RefLabel(..), defaultEval, mkComponent, mkEval, modify_)
+import Halogen (Component, defaultEval, mkComponent, mkEval, modify_)
 import Halogen as H
 import Halogen.HTML as HH
 import Halogen.HTML.Events as HE
 import Halogen.HTML.Properties as HP
 import HalogenUtils as HU
 import Page as Page
-import Partial.Unsafe (unsafeCrashWith)
 import Type.Proxy (Proxy(..))
 import Unsafe as Unsafe
 import Web.Event.Event as Event
 import Web.HTML.HTMLSelectElement as HTMLSelectElement
-import Web.UIEvent.KeyboardEvent (KeyboardEvent)
 
 static_content = Page.static_content spec
 start_client = Page.start_client spec
@@ -46,6 +39,7 @@ spec :: Page.Spec
 spec = Page.Spec
   { title: "Index"
   , static_content: "This is the index of the entire website."
+  , stylesheet_hrefs: [ "./main.css" ]
   , content: mkSomeContent (Proxy :: Proxy Index)
   }
 
@@ -54,7 +48,7 @@ foreign import data Index :: ContentKind
 instance Content Index where
   renderContent _ = do
     widgetSlotId <- nextWidgetSlotId
-    pure (HH.slot_ _widget widgetSlotId mainComponent unit)
+    pure [ HH.slot_ _widget widgetSlotId mainComponent unit ]
 
 -- =============================================================================
 
@@ -84,18 +78,28 @@ mainComponent = mkComponent { initialState, eval, render }
 
   render state =
     HH.div
-      [ HU.style [ "width: 100vw", "height: 100vh", "display: flex", "flex-direction: column" ] ]
+      [ HU.style [ "display: flex", "flex-direction: column" ] ]
       [ HH.div
           [ HE.onClick (\_ -> SetShowEditor_Action (not state.show_editor))
-          , HU.style [ "align-content: center", "text-align: center" ]
+          , HU.style [ "padding: 0.5em", "align-content: center", "text-align: center" ]
           ]
           [ HH.button [] [ HH.text if state.show_editor then "hide editor" else "show editor" ] ]
       , HH.div
           [ HU.style ([ [ "max-height: 50%", "overflow-y: scroll" ], if state.show_editor then [] else [ "display: none" ] ] # Array.fold) ]
           [ HH.div
               [ HU.style [ "padding: 0.5em" ] ]
-              [ HH.slot (Proxy :: Proxy "query") unit editorComponent { content: Grouped Column (Include "NoteA" : Include "NoteB" : Styled Quote Hole : Nil) } case _ of
-                  UpdateEditorOutput content -> OnQueryChange content
+              [ HH.slot (Proxy :: Proxy "query") unit editorComponent
+                  { content:
+                      Grouped Column
+                        ( Styled Title (Literal "This is a simple example to start")
+                            : Named "NoteA"
+                            : Named "NoteB"
+                            : Styled Block (Styled Quote (Grouped Column (Named "Lorem Ipsum Long" : Nil)))
+                            : Nil
+                        )
+                  }
+                  case _ of
+                    UpdateEditorOutput content -> OnQueryChange content
               ]
           ]
       , HH.div
@@ -150,7 +154,15 @@ editorComponent = mkComponent { initialState, eval, render }
 
   render_SomeContentBuilder :: (SomeContentBuilder -> SomeContentBuilder) -> SomeContentBuilder -> _
   render_SomeContentBuilder wrap = case _ of
-    Include name ->
+    Literal str ->
+      HH.div
+        []
+        [ HH.textarea
+            [ HP.value str
+            , HE.onValueChange (\str' -> SetSomeContentBuilder_EditorAction (wrap (Literal str')))
+            ]
+        ]
+    Named name ->
       let
         names = namedSomeContent # Map.keys # Array.fromFoldable
       in
@@ -164,13 +176,13 @@ editorComponent = mkComponent { initialState, eval, render }
                         i = event # Event.target # Unsafe.fromJust # HTMLSelectElement.fromEventTarget # Unsafe.fromJust # HTMLSelectElement.value # unsafePerformEffect # Int.fromString # Unsafe.fromJust
                         name' = names Array.!! i # Unsafe.fromJust
                       in
-                        SetSomeContentBuilder_EditorAction (wrap (Include name'))
+                        SetSomeContentBuilder_EditorAction (wrap (Named name'))
                   )
               ]
               ( names # mapWithIndex \i name' ->
                   HH.option
                     [ HP.selected (name == name'), HP.value (show i) ]
-                    [ HH.text name ]
+                    [ HH.text name' ]
               )
           ]
     Styled style content ->
@@ -199,9 +211,10 @@ editorComponent = mkComponent { initialState, eval, render }
         options =
           [ Left unit ] <>
             ( Right <$>
-                [ "Grouped" /\ Grouped Column Nil
+                [ "Literal" /\ Literal ""
+                , "Named" /\ Named "Lorem Ipsum"
+                , "Grouped" /\ Grouped Column Nil
                 , "Styled" /\ Styled Quote Hole
-                , "Named" /\ Include "NoteA"
                 ]
             )
       in
@@ -220,7 +233,7 @@ editorComponent = mkComponent { initialState, eval, render }
               ]
               ( options # mapWithIndex \i option -> HH.option [ HP.selected (isLeft option), HP.value (show i) ]
                   [ HH.text case option of
-                      Left _ -> "hole"
+                      Left _ -> ""
                       Right (label /\ _) -> label
                   ]
               )
@@ -228,7 +241,14 @@ editorComponent = mkComponent { initialState, eval, render }
 
   render_SomeStyleBuilder wrap style =
     let
-      styles = [ Quote, Code ]
+      styles =
+        [ Title
+        , Section
+        , Subsection
+        , Block
+        , Quote
+        , Code
+        ]
     in
       HH.div
         []
@@ -270,15 +290,15 @@ editorComponent = mkComponent { initialState, eval, render }
         [ HU.style [ "display: flex", "flex-direction: column", "gap: 0.5em" ] ]
         [ HH.div
             [ HU.style [ "display: flex", "flex-direction: row", "gap: 0.5em" ] ]
-            [ HH.button [ HE.onClick (\_ -> SetSomeContentBuilder_EditorAction (wrap (Cons Hole Nil))) ] [ HH.text "+" ]
+            [ HH.button [ HE.onClick (\_ -> SetSomeContentBuilder_EditorAction (wrap (Cons Hole Nil))) ] [ HH.text "➕" ]
             ]
-        , HH.div
-            [ HU.style [ boxshadow_small, padding_small, "display: flex", "flex-direction: column", "gap: 0.5em" ] ]
-            [ HH.div
-                [ HU.style [ "display: flex", "flex-direction: column", "gap: 0.5em" ] ]
-                [ HH.div [] [ HH.text "Nil" ]
-                ]
-            ]
+        -- , HH.div
+        --     [ HU.style [ boxshadow_small, padding_small, "display: flex", "flex-direction: column", "gap: 0.5em" ] ]
+        --     [ HH.div
+        --         [ HU.style [ "display: flex", "flex-direction: column", "gap: 0.5em" ] ]
+        --         [ HH.div [] [ HH.text "Nil" ]
+        --         ]
+        --     ]
         ]
 
     Cons content list ->
@@ -326,4 +346,7 @@ subcontentComponent = mkComponent { initialState, eval, render }
         SubcontentAction _action -> pure unit
     }
 
-  render state = renderSomeContentBuilder state.content # bimap (map SubcontentAction) SubcontentAction
+  render state =
+    HH.div
+      []
+      (renderSomeContentBuilder state.content # map (bimap (map SubcontentAction) SubcontentAction))

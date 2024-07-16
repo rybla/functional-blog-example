@@ -342,11 +342,6 @@
   };
 
   // output/Data.Semigroup/foreign.js
-  var concatString = function(s1) {
-    return function(s2) {
-      return s1 + s2;
-    };
-  };
   var concatArray = function(xs) {
     return function(ys) {
       if (xs.length === 0) return ys;
@@ -356,9 +351,6 @@
   };
 
   // output/Data.Semigroup/index.js
-  var semigroupString = {
-    append: concatString
-  };
   var semigroupArray = {
     append: concatArray
   };
@@ -367,12 +359,6 @@
   };
 
   // output/Data.Monoid/index.js
-  var monoidString = {
-    mempty: "",
-    Semigroup0: function() {
-      return semigroupString;
-    }
-  };
   var mempty = function(dict) {
     return dict.mempty;
   };
@@ -1075,36 +1061,6 @@
   var foldl = function(dict) {
     return dict.foldl;
   };
-  var intercalate = function(dictFoldable) {
-    var foldl2 = foldl(dictFoldable);
-    return function(dictMonoid) {
-      var append5 = append(dictMonoid.Semigroup0());
-      var mempty2 = mempty(dictMonoid);
-      return function(sep) {
-        return function(xs) {
-          var go2 = function(v) {
-            return function(v1) {
-              if (v.init) {
-                return {
-                  init: false,
-                  acc: v1
-                };
-              }
-              ;
-              return {
-                init: false,
-                acc: append5(v.acc)(append5(sep)(v1))
-              };
-            };
-          };
-          return foldl2(go2)({
-            init: true,
-            acc: mempty2
-          })(xs).acc;
-        };
-      };
-    };
-  };
   var foldableMaybe = {
     foldr: function(v) {
       return function(v1) {
@@ -1156,12 +1112,12 @@
   var foldMapDefaultR = function(dictFoldable) {
     var foldr22 = foldr(dictFoldable);
     return function(dictMonoid) {
-      var append5 = append(dictMonoid.Semigroup0());
+      var append6 = append(dictMonoid.Semigroup0());
       var mempty2 = mempty(dictMonoid);
       return function(f) {
         return foldr22(function(x) {
           return function(acc) {
-            return append5(f(x))(acc);
+            return append6(f(x))(acc);
           };
         })(mempty2);
       };
@@ -1196,11 +1152,7 @@
   };
 
   // output/Data.Array/index.js
-  var intercalate1 = /* @__PURE__ */ intercalate(foldableArray);
   var fromJust2 = /* @__PURE__ */ fromJust();
-  var intercalate2 = function(dictMonoid) {
-    return intercalate1(dictMonoid);
-  };
   var fromFoldable = function(dictFoldable) {
     return runFn2(fromFoldableImpl)(foldr(dictFoldable));
   };
@@ -1437,6 +1389,48 @@
       }
     };
   }();
+
+  // output/Data.List/index.js
+  var reverse2 = /* @__PURE__ */ function() {
+    var go2 = function($copy_v) {
+      return function($copy_v1) {
+        var $tco_var_v = $copy_v;
+        var $tco_done = false;
+        var $tco_result;
+        function $tco_loop(v, v1) {
+          if (v1 instanceof Nil) {
+            $tco_done = true;
+            return v;
+          }
+          ;
+          if (v1 instanceof Cons) {
+            $tco_var_v = new Cons(v1.value0, v);
+            $copy_v1 = v1.value1;
+            return;
+          }
+          ;
+          throw new Error("Failed pattern match at Data.List (line 368, column 3 - line 368, column 19): " + [v.constructor.name, v1.constructor.name]);
+        }
+        ;
+        while (!$tco_done) {
+          $tco_result = $tco_loop($tco_var_v, $copy_v1);
+        }
+        ;
+        return $tco_result;
+      };
+    };
+    return go2(Nil.value);
+  }();
+  var $$null = function(v) {
+    if (v instanceof Nil) {
+      return true;
+    }
+    ;
+    return false;
+  };
+  var fromFoldable2 = function(dictFoldable) {
+    return foldr(dictFoldable)(Cons.create)(Nil.value);
+  };
 
   // output/Halogen.Query.Input/index.js
   var RefUpdate = /* @__PURE__ */ function() {
@@ -2141,45 +2135,6 @@
     return Object.prototype.toString.call(value12) === "[object Array]";
   };
 
-  // output/Data.List/index.js
-  var reverse2 = /* @__PURE__ */ function() {
-    var go2 = function($copy_v) {
-      return function($copy_v1) {
-        var $tco_var_v = $copy_v;
-        var $tco_done = false;
-        var $tco_result;
-        function $tco_loop(v, v1) {
-          if (v1 instanceof Nil) {
-            $tco_done = true;
-            return v;
-          }
-          ;
-          if (v1 instanceof Cons) {
-            $tco_var_v = new Cons(v1.value0, v);
-            $copy_v1 = v1.value1;
-            return;
-          }
-          ;
-          throw new Error("Failed pattern match at Data.List (line 368, column 3 - line 368, column 19): " + [v.constructor.name, v1.constructor.name]);
-        }
-        ;
-        while (!$tco_done) {
-          $tco_result = $tco_loop($tco_var_v, $copy_v1);
-        }
-        ;
-        return $tco_result;
-      };
-    };
-    return go2(Nil.value);
-  }();
-  var $$null = function(v) {
-    if (v instanceof Nil) {
-      return true;
-    }
-    ;
-    return false;
-  };
-
   // output/Partial.Unsafe/foreign.js
   var _unsafePartial = function(f) {
     return f();
@@ -2586,19 +2541,13 @@
       };
     };
   };
-  var attr = function(ns) {
-    return function(v) {
-      return Attribute.create(ns)(v);
-    };
-  };
 
   // output/Halogen.HTML.Elements/index.js
   var element2 = /* @__PURE__ */ function() {
     return element(Nothing.value);
   }();
-  var span2 = /* @__PURE__ */ element2("span");
-  var span_ = /* @__PURE__ */ span2([]);
   var div2 = /* @__PURE__ */ element2("div");
+  var div_ = /* @__PURE__ */ div2([]);
 
   // output/Halogen.HTML.Properties/index.js
   var unwrap2 = /* @__PURE__ */ unwrap();
@@ -2612,21 +2561,11 @@
       return $36(unwrap2($37));
     };
   }();
-  var attr2 = /* @__PURE__ */ function() {
-    return attr(Nothing.value);
-  }();
-  var style = /* @__PURE__ */ attr2("style");
-
-  // output/HalogenUtils/index.js
-  var style2 = /* @__PURE__ */ function() {
-    var $2 = intercalate2(monoidString)("; ");
-    return function($3) {
-      return style($2($3));
-    };
-  }();
 
   // output/Content/index.js
   var fromFoldable3 = /* @__PURE__ */ fromFoldable(foldableList);
+  var append2 = /* @__PURE__ */ append(semigroupList);
+  var fromFoldable1 = /* @__PURE__ */ fromFoldable2(foldableArray);
   var monadStateStateT2 = /* @__PURE__ */ monadStateStateT(monadIdentity);
   var Initialize_ContentAction = /* @__PURE__ */ function() {
     function Initialize_ContentAction2() {
@@ -2643,7 +2582,7 @@
       return function(v) {
         return function(mhs) {
           return bind6(mhs)(function(hs) {
-            return pure10(div2([class_("column"), style2(["display: flex", "flex-direction: column"])])(fromFoldable3(hs)));
+            return pure10([div2([class_("Group_Column")])(fromFoldable3(hs))]);
           });
         };
       };
@@ -2702,7 +2641,7 @@
           return function(_cs) {
             return bind6(renderContent2($$Proxy.value))(function(h) {
               return bind6(renderContentList2($$Proxy.value))(function(hs) {
-                return pure10(new Cons(h, hs));
+                return pure10(append2(fromFoldable1(h))(hs));
               });
             });
           };
@@ -2721,9 +2660,9 @@
     widgetSlotId: 0
   });
   var renderFinalContent = function(dictContent) {
-    var $131 = renderContent(dictContent)(monadStateStateT2);
-    return function($132) {
-      return finalizeContent($131($132));
+    var $181 = renderContent(dictContent)(monadStateStateT2);
+    return function($182) {
+      return finalizeContent($181($182));
     };
   };
   var renderFinalSomeContent = /* @__PURE__ */ unSomeContent(function(dictContent) {
@@ -2735,7 +2674,7 @@
     renderContent: function(dictMonadState) {
       var pure10 = pure(dictMonadState.Monad0().Applicative0());
       return function(v) {
-        return pure10(span_([text("This is NoteA.")]));
+        return pure10([div_([text("This is NoteA.")])]);
       };
     }
   };
@@ -2745,7 +2684,7 @@
     renderContent: function(dictMonadState) {
       var pure10 = pure(dictMonadState.Monad0().Applicative0());
       return function(v) {
-        return pure10(span_([text("This is NoteB.")]));
+        return pure10([div2([])([text("This is NoteB.")])]);
       };
     }
   };
@@ -4931,13 +4870,13 @@
   var empty6 = /* @__PURE__ */ function() {
     return CatNil.value;
   }();
-  var append2 = link;
+  var append3 = link;
   var semigroupCatList = {
-    append: append2
+    append: append3
   };
   var snoc3 = function(cat) {
     return function(a2) {
-      return append2(cat)(new CatCons(a2, empty5));
+      return append3(cat)(new CatCons(a2, empty5));
     };
   };
 
@@ -4954,7 +4893,7 @@
       return val;
     };
   };
-  var append3 = /* @__PURE__ */ append(semigroupCatList);
+  var append4 = /* @__PURE__ */ append(semigroupCatList);
   var Free = /* @__PURE__ */ function() {
     function Free2(value0, value1) {
       this.value0 = value0;
@@ -5000,7 +4939,7 @@
       };
       var concatF = function(v22) {
         return function(r) {
-          return new Free(v22.value0, append3(v22.value1)(r));
+          return new Free(v22.value0, append4(v22.value1)(r));
         };
       };
       if (v.value0 instanceof Return) {
@@ -5129,7 +5068,7 @@
   // output/Halogen.Subscription/index.js
   var $$void4 = /* @__PURE__ */ $$void(functorEffect);
   var bind3 = /* @__PURE__ */ bind(bindEffect);
-  var append4 = /* @__PURE__ */ append(semigroupArray);
+  var append5 = /* @__PURE__ */ append(semigroupArray);
   var traverse_2 = /* @__PURE__ */ traverse_(applicativeEffect);
   var traverse_1 = /* @__PURE__ */ traverse_2(foldableArray);
   var unsubscribe = function(v) {
@@ -5153,7 +5092,7 @@
       emitter: function(k) {
         return function __do2() {
           modify_(function(v) {
-            return append4(v)([k]);
+            return append5(v)([k]);
           })(subscribers)();
           return modify_(deleteBy(unsafeRefEq)(k))(subscribers);
         };
@@ -6461,7 +6400,7 @@
   var start_client = function(v) {
     var component = function() {
       var render = function(_state) {
-        return renderFinalSomeContent(v.content);
+        return div2([class_("Page")])(renderFinalSomeContent(v.content));
       };
       var initialState = function(_input) {
         return {};
@@ -6499,6 +6438,7 @@
     return {
       title: "Example2",
       static_content: "This is a placeholder for Example2.",
+      stylesheet_hrefs: ["../main.css"],
       content: mkSomeContent(contentGrouped(groupColumn)(contentListCons(contentNoteA)(contentListCons(contentNoteB)(contentListNil))))($$Proxy.value)
     };
   }();

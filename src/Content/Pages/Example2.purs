@@ -16,10 +16,11 @@ spec :: Page.Spec
 spec = Page.Spec
   { title: "Example2"
   , static_content: "This is a placeholder for Example2."
+  , stylesheet_hrefs: [ "../main.css" ]
   , content: mkSomeContent
       ( Proxy
           :: Proxy
-            ( Grouped Column
+               ( Grouped Column
                    ( NoteA
                        : NoteB
                        : Nil

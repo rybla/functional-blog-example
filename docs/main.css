@@ -1,0 +1,48 @@
+.Page {
+  width: 40em;
+  margin: auto;
+}
+
+.Group_Column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.Group_Row {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+}
+
+.Style_Title {
+  font-size: 4em;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.Style_Section {
+  font-size: 3em;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.Style_Subsection {
+  font-size: 2em;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.Style_Block {
+  margin: 0.5em;
+  padding: 0.5em;
+  box-shadow: 0 0 0.5em 0;
+}
+
+.Style_Quote {
+  font-style: italic;
+}
+
+.Style_Code {
+  font-family: 'Courier New', Courier, monospace;
+}

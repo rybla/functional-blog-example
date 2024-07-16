@@ -1355,6 +1355,45 @@
     };
   }();
 
+  // output/Data.List/index.js
+  var reverse2 = /* @__PURE__ */ function() {
+    var go2 = function($copy_v) {
+      return function($copy_v1) {
+        var $tco_var_v = $copy_v;
+        var $tco_done = false;
+        var $tco_result;
+        function $tco_loop(v, v1) {
+          if (v1 instanceof Nil) {
+            $tco_done = true;
+            return v;
+          }
+          ;
+          if (v1 instanceof Cons) {
+            $tco_var_v = new Cons(v1.value0, v);
+            $copy_v1 = v1.value1;
+            return;
+          }
+          ;
+          throw new Error("Failed pattern match at Data.List (line 368, column 3 - line 368, column 19): " + [v.constructor.name, v1.constructor.name]);
+        }
+        ;
+        while (!$tco_done) {
+          $tco_result = $tco_loop($tco_var_v, $copy_v1);
+        }
+        ;
+        return $tco_result;
+      };
+    };
+    return go2(Nil.value);
+  }();
+  var $$null = function(v) {
+    if (v instanceof Nil) {
+      return true;
+    }
+    ;
+    return false;
+  };
+
   // output/Halogen.Query.Input/index.js
   var RefUpdate = /* @__PURE__ */ function() {
     function RefUpdate2(value0, value1) {
@@ -2058,45 +2097,6 @@
     return Object.prototype.toString.call(value12) === "[object Array]";
   };
 
-  // output/Data.List/index.js
-  var reverse2 = /* @__PURE__ */ function() {
-    var go2 = function($copy_v) {
-      return function($copy_v1) {
-        var $tco_var_v = $copy_v;
-        var $tco_done = false;
-        var $tco_result;
-        function $tco_loop(v, v1) {
-          if (v1 instanceof Nil) {
-            $tco_done = true;
-            return v;
-          }
-          ;
-          if (v1 instanceof Cons) {
-            $tco_var_v = new Cons(v1.value0, v);
-            $copy_v1 = v1.value1;
-            return;
-          }
-          ;
-          throw new Error("Failed pattern match at Data.List (line 368, column 3 - line 368, column 19): " + [v.constructor.name, v1.constructor.name]);
-        }
-        ;
-        while (!$tco_done) {
-          $tco_result = $tco_loop($tco_var_v, $copy_v1);
-        }
-        ;
-        return $tco_result;
-      };
-    };
-    return go2(Nil.value);
-  }();
-  var $$null = function(v) {
-    if (v instanceof Nil) {
-      return true;
-    }
-    ;
-    return false;
-  };
-
   // output/Partial.Unsafe/foreign.js
   var _unsafePartial = function(f) {
     return f();
@@ -2322,6 +2322,7 @@
     ;
     throw new Error("Failed pattern match at Halogen.VDom.DOM.Prop (line 182, column 16 - line 187, column 16): " + [v.constructor.name]);
   };
+  var propFromString = unsafeCoerce2;
   var buildProp = function(emit) {
     return function(el) {
       var removeProp = function(prevEvents) {
@@ -2475,8 +2476,23 @@
   var HTML = function(x) {
     return x;
   };
+  var toPropValue = function(dict) {
+    return dict.toPropValue;
+  };
   var text = function($29) {
     return HTML(Text.create($29));
+  };
+  var prop = function(dictIsProp) {
+    var toPropValue1 = toPropValue(dictIsProp);
+    return function(v) {
+      var $31 = Property.create(v);
+      return function($32) {
+        return $31(toPropValue1($32));
+      };
+    };
+  };
+  var isPropString = {
+    toPropValue: propFromString
   };
   var element = function(ns) {
     return function(name15) {
@@ -2492,8 +2508,21 @@
   var element2 = /* @__PURE__ */ function() {
     return element(Nothing.value);
   }();
-  var span2 = /* @__PURE__ */ element2("span");
-  var span_ = /* @__PURE__ */ span2([]);
+  var div2 = /* @__PURE__ */ element2("div");
+  var div_ = /* @__PURE__ */ div2([]);
+
+  // output/Halogen.HTML.Properties/index.js
+  var unwrap2 = /* @__PURE__ */ unwrap();
+  var prop2 = function(dictIsProp) {
+    return prop(dictIsProp);
+  };
+  var prop22 = /* @__PURE__ */ prop2(isPropString);
+  var class_ = /* @__PURE__ */ function() {
+    var $36 = prop22("className");
+    return function($37) {
+      return $36(unwrap2($37));
+    };
+  }();
 
   // output/Content/index.js
   var monadStateStateT2 = /* @__PURE__ */ monadStateStateT(monadIdentity);
@@ -2525,9 +2554,9 @@
     widgetSlotId: 0
   });
   var renderFinalContent = function(dictContent) {
-    var $131 = renderContent(dictContent)(monadStateStateT2);
-    return function($132) {
-      return finalizeContent($131($132));
+    var $181 = renderContent(dictContent)(monadStateStateT2);
+    return function($182) {
+      return finalizeContent($181($182));
     };
   };
   var renderFinalSomeContent = /* @__PURE__ */ unSomeContent(function(dictContent) {
@@ -2539,7 +2568,7 @@
     renderContent: function(dictMonadState) {
       var pure10 = pure(dictMonadState.Monad0().Applicative0());
       return function(v) {
-        return pure10(span_([text("This is NoteA.")]));
+        return pure10([div_([text("This is NoteA.")])]);
       };
     }
   };
@@ -6063,7 +6092,7 @@
   var $$void6 = /* @__PURE__ */ $$void(functorEffect);
   var pure8 = /* @__PURE__ */ pure(applicativeEffect);
   var traverse_6 = /* @__PURE__ */ traverse_(applicativeEffect)(foldableMaybe);
-  var unwrap2 = /* @__PURE__ */ unwrap();
+  var unwrap3 = /* @__PURE__ */ unwrap();
   var when3 = /* @__PURE__ */ when(applicativeEffect);
   var not2 = /* @__PURE__ */ not(/* @__PURE__ */ heytingAlgebraFunction(/* @__PURE__ */ heytingAlgebraFunction(heytingAlgebraBoolean)));
   var identity6 = /* @__PURE__ */ identity(categoryFn);
@@ -6108,7 +6137,7 @@
           return unit;
         };
         var buildWidget2 = function(spec2) {
-          var buildThunk2 = buildThunk(unwrap2)(spec2);
+          var buildThunk2 = buildThunk(unwrap3)(spec2);
           var $lazy_patch = $runtime_lazy8("patch", "Halogen.VDom.Driver", function() {
             return function(st, slot) {
               if (st instanceof Just) {
@@ -6255,7 +6284,7 @@
   var start_client = function(v) {
     var component = function() {
       var render = function(_state) {
-        return renderFinalSomeContent(v.content);
+        return div2([class_("Page")])(renderFinalSomeContent(v.content));
       };
       var initialState = function(_input) {
         return {};
@@ -6293,6 +6322,7 @@
     return {
       title: "Example1",
       static_content: "This is a placeholder.",
+      stylesheet_hrefs: ["../main.css"],
       content: mkSomeContent(contentNoteA)($$Proxy.value)
     };
   }();
