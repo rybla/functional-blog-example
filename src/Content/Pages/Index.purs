@@ -16,6 +16,7 @@ import Data.FunctorWithIndex (mapWithIndex)
 import Data.Int as Int
 import Data.Map as Map
 import Data.Maybe (Maybe(..), isJust, maybe)
+import Data.String as String
 import Data.Tuple.Nested ((/\))
 import Effect.Aff (Aff, error, throwError)
 import Effect.Class.Console as Console
@@ -26,7 +27,7 @@ import Halogen.HTML as HH
 import Halogen.HTML.Events as HE
 import Halogen.HTML.Properties as HP
 import HalogenUtils as HU
-import JSURI (decodeURIComponent)
+import JSURI (decodeURIComponent, encodeURIComponent)
 import Page as Page
 import Type.Proxy (Proxy(..))
 import Unsafe as Unsafe
@@ -108,7 +109,7 @@ mainComponent = mkComponent { initialState, eval, render }
           ]
           [ HH.button [] [ HH.text if state.show_editor then "hide editor" else "show editor" ] ]
       , HH.div
-          [ HU.style ([ [ "max-height: 50%", "overflow-y: scroll" ], if state.show_editor then [] else [ "display: none" ] ] # Array.fold) ]
+          [ HU.style (if state.show_editor then [ "max-height: 50vh", "overflow-y: scroll" ] else [ "display: none" ]) ]
           [ HH.div
               [ HU.style [ "padding: 0.5em" ] ]
               [ HH.slot (Proxy :: Proxy "query") unit editorComponent
@@ -122,17 +123,44 @@ mainComponent = mkComponent { initialState, eval, render }
               ]
           ]
       , HH.div
-          [ HU.style ((if (state.mb_err_content_builder # maybe false (either (const false) (const true))) then [] else [ "max-height: 50%" ]) <> [ "overflow-y: scroll" ]) ]
+          [ HU.style ((if (state.mb_err_content_builder # maybe false (either (const false) (const true))) then [] else [ "max-height: 40vh" ]) <> [ "overflow-y: scroll" ]) ]
           [ HH.div
               [ HU.style [ "padding: 0.5em" ] ]
               [ case state.mb_err_content_builder of
                   Nothing -> HH.span_ [ HH.text "<Nothing>" ]
                   Just (Left err) -> HH.span_ [ HH.text (show err) ]
-                  Just (Right content) -> HH.div
-                    []
-                    [ HH.pre [ HU.style [ "overflow-x: scroll" ] ] [ HH.text (encodeMu content) ]
-                    , HH.slot_ (Proxy :: Proxy "content") unit subcontentComponent { content }
-                    ]
+                  Just (Right content) ->
+                    HH.div
+                      [ HU.style [ "display: flex", "flex-direction: column", "gap: 1em" ] ]
+                      [ let
+                          enc = content # encodeMu
+                          href = "/?content=" <> (enc # encodeURIComponent # Unsafe.fromJust)
+                          href_len = href # String.length
+                        in
+                          HH.div
+                            [ HU.style [ "display: flex", "flex-direction: column", "gap: 0.5em" ] ]
+                            ( ( [ "Google Chrome" /\ 2048
+                                , "Mozilla Firefox" /\ 65536
+                                , "Internet Explorer" /\ 2083
+                                , "Safari" /\ 80000
+                                , "Opera" /\ 190000
+                                ]
+                                  # Array.filter (\(_ /\ n) -> href_len > n)
+                                  # map (\(browser_name /\ n) -> HH.div [ HU.style [ "color: red" ] ] [ HH.text ("This URL's length (" <> show href_len <> ") is too long (> " <> show n <> ") for " <> browser_name) ])
+                              )
+                                <>
+                                  [ HH.div
+                                      []
+                                      [ HH.a
+                                          [ HU.style [ "font-family: monospace" ]
+                                          , HP.href href
+                                          ]
+                                          [ HH.text enc ]
+                                      ]
+                                  ]
+                            )
+                      , HH.slot_ (Proxy :: Proxy "content") unit subcontentComponent { content }
+                      ]
               ]
           ]
       ]
@@ -183,8 +211,9 @@ editorComponent = mkComponent { initialState, eval, render }
   render_SomeContentBuilder wrap = case _ of
     Literal str ->
       HH.div
-        []
-        [ HH.textarea
+        [ HU.style [ boxshadow_small, padding_small, "display: flex", "flex-direction: row", "gap: 0.5em" ] ]
+        [ render_controls wrap
+        , HH.textarea
             [ HP.value str
             , HE.onValueChange (\str' -> SetSomeContentBuilder_EditorAction (wrap (Literal str')))
             ]
