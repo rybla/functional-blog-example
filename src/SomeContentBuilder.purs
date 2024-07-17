@@ -1,6 +1,7 @@
 module SomeContentBuilder where
 
 import Content
+import Data.Generic.Rep
 import Prelude
 import Prim hiding (Row)
 
@@ -9,15 +10,25 @@ import Control.Monad.Error.Class (throwError)
 import Data.Argonaut (class DecodeJson, class EncodeJson)
 import Data.Argonaut.Decode.Generic (genericDecodeJson)
 import Data.Argonaut.Encode.Generic (genericEncodeJson)
+import Data.Array as Array
 import Data.Either (Either(..))
+import Data.Either.Nested (type (\/))
 import Data.Eq.Generic (genericEq)
-import Data.Generic.Rep (class Generic)
+import Data.Foldable (fold)
+import Data.FoldableWithIndex (foldMapWithIndex)
+import Data.Int as Int
 import Data.Map as Map
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe(..), maybe)
 import Data.Show.Generic (genericShow)
+import Data.String as String
+import Data.Tuple.Nested (type (/\), (/\))
 import Halogen.HTML as HH
 import HalogenUtils as HU
-import Type.Prelude (Proxy(..), reifySymbol)
+import Parsing (ParseError(..), Parser, position, runParser)
+import Parsing.Combinators (manyTill, (<|>))
+import Parsing.String (anyCodePoint, char, string)
+import Partial.Unsafe (unsafeCrashWith)
+import Type.Prelude (class IsSymbol, Proxy(..), reifySymbol)
 
 -- =============================================================================
 
@@ -177,3 +188,134 @@ fromNamedSomeContentBuilder name = case Map.lookup name namedSomeContent of
   Nothing -> throwError ("unknown name: " <> show name)
   Just some_content -> pure some_content
 
+-- =============================================================================
+-- EncodeMu and DecodeMu (micro encoding format)
+
+class EncodeMu a where
+  encodeMu :: a -> String
+
+class DecodeMu a where
+  parseMu :: Unit -> Parser String a
+
+decodeMu :: forall a. DecodeMu a => String -> ParseError \/ a
+decodeMu s = runParser s (parseMu unit)
+
+-- main instances
+
+instance EncodeMu SomeContentBuilder where
+  encodeMu x = generic_encodeMu x
+
+instance DecodeMu SomeContentBuilder where
+  parseMu x = generic_parseMu x
+
+instance EncodeMu SomeContentListBuilder where
+  encodeMu x = generic_encodeMu x
+
+instance DecodeMu SomeContentListBuilder where
+  parseMu x = generic_parseMu x
+
+instance EncodeMu SomeStyleBuilder where
+  encodeMu x = generic_encodeMu x
+
+instance DecodeMu SomeStyleBuilder where
+  parseMu x = generic_parseMu x
+
+instance EncodeMu SomeGroupBuilder where
+  encodeMu x = generic_encodeMu x
+
+instance DecodeMu SomeGroupBuilder where
+  parseMu x = generic_parseMu x
+
+-- Generic_EncodeMu and Generic_DecodeMu
+
+class Generic_EncodeMu a where
+  generic_encodeMu' :: a -> String
+
+class Generic_EncodeMuArgs a where
+  generic_encodeMuArgs :: a -> String
+
+class Generic_DecodeMu a where
+  generic_parseMu' :: Unit -> Parser String a
+
+class Generic_DecodeMuArgs a where
+  generic_parseMuArgs :: Unit -> Parser String a
+
+instance Generic_EncodeMu NoConstructors where
+  generic_encodeMu' x = generic_encodeMu' x
+
+instance Generic_DecodeMu NoConstructors where
+  generic_parseMu' x = generic_parseMu' x
+
+instance Generic_EncodeMuArgs NoArguments where
+  generic_encodeMuArgs _ = ""
+
+instance Generic_DecodeMuArgs NoArguments where
+  generic_parseMuArgs _ = pure NoArguments
+
+instance (Generic_EncodeMu a, Generic_EncodeMu b) => Generic_EncodeMu (Sum a b) where
+  generic_encodeMu' (Inl a) = "0" <> generic_encodeMu' a
+  generic_encodeMu' (Inr b) = "1" <> generic_encodeMu' b
+
+instance (Generic_DecodeMu a, Generic_DecodeMu b) => Generic_DecodeMu (Sum a b) where
+  generic_parseMu' _ = do
+    (string "0" <|> string "1") >>= case _ of
+      "0" -> Inl <$> generic_parseMu' unit
+      "1" -> Inr <$> generic_parseMu' unit
+      _ -> unsafeCrashWith "impossible"
+
+instance (Generic_EncodeMuArgs a, Generic_EncodeMuArgs b) => Generic_EncodeMuArgs (Product a b) where
+  generic_encodeMuArgs (Product a b) = "0" <> generic_encodeMuArgs a <> "1" <> generic_encodeMuArgs b
+
+instance (Generic_DecodeMuArgs a, Generic_DecodeMuArgs b) => Generic_DecodeMuArgs (Product a b) where
+  generic_parseMuArgs _ = do
+    _ <- string "0"
+    a <- generic_parseMuArgs unit
+    _ <- string "1"
+    b <- generic_parseMuArgs unit
+    pure (Product a b)
+
+instance Generic_EncodeMuArgs a => Generic_EncodeMu (Constructor name a) where
+  generic_encodeMu' (Constructor a) = generic_encodeMuArgs a
+
+instance Generic_DecodeMuArgs a => Generic_DecodeMu (Constructor name a) where
+  generic_parseMu' _ = Constructor <$> generic_parseMuArgs unit
+
+instance EncodeMu a => Generic_EncodeMuArgs (Argument a) where
+  generic_encodeMuArgs (Argument a) = encodeMu a
+
+instance DecodeMu a => Generic_DecodeMuArgs (Argument a) where
+  generic_parseMuArgs _ = Argument <$> parseMu unit
+
+generic_encodeMu :: forall a rep. Generic a rep => Generic_EncodeMu rep => a -> String
+generic_encodeMu x = generic_encodeMu' (from x)
+
+generic_parseMu :: forall a rep. Generic a rep => Generic_DecodeMu rep => Unit -> Parser String a
+generic_parseMu x = generic_parseMu' x <#> to
+
+-- utility instances
+
+instance EncodeMu String where
+  encodeMu s = s <> ".String"
+
+instance DecodeMu String where
+  parseMu _ = do
+    cps <- anyCodePoint `manyTill` (string ".String")
+    pure (cps # Array.fromFoldable # String.fromCodePointArray)
+
+instance EncodeMu Int where
+  encodeMu i = show i <> ".Int"
+
+instance DecodeMu Int where
+  parseMu _ = do
+    cps <- anyCodePoint `manyTill` (string ".Int")
+    let s = cps # Array.fromFoldable # String.fromCodePointArray
+    pos <- position
+    s # Int.fromString # maybe (throwError (ParseError ("expected an Int, but found " <> show s) pos)) pure
+
+instance EncodeMu Unit where
+  encodeMu _ = ".Unit"
+
+instance DecodeMu Unit where
+  parseMu _ = do
+    _ <- string ".Unit"
+    pure unit

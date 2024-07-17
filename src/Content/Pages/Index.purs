@@ -10,26 +10,32 @@ import Control.Monad.State.Class (get, put)
 import Data.Argonaut (JsonDecodeError)
 import Data.Array as Array
 import Data.Bifunctor (bimap)
-import Data.Either (Either(..), isLeft)
+import Data.Either (Either(..), either, isLeft, isRight)
 import Data.Either.Nested (type (\/))
 import Data.FunctorWithIndex (mapWithIndex)
 import Data.Int as Int
 import Data.Map as Map
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe(..), isJust, maybe)
 import Data.Tuple.Nested ((/\))
-import Effect.Aff (Aff)
+import Effect.Aff (Aff, error, throwError)
+import Effect.Class.Console as Console
 import Effect.Unsafe (unsafePerformEffect)
-import Halogen (Component, defaultEval, mkComponent, mkEval, modify_)
+import Halogen (Component, defaultEval, liftEffect, mkComponent, mkEval, modify_)
 import Halogen as H
 import Halogen.HTML as HH
 import Halogen.HTML.Events as HE
 import Halogen.HTML.Properties as HP
 import HalogenUtils as HU
+import JSURI (decodeURIComponent)
 import Page as Page
 import Type.Proxy (Proxy(..))
 import Unsafe as Unsafe
 import Web.Event.Event as Event
+import Web.HTML as HTML
 import Web.HTML.HTMLSelectElement as HTMLSelectElement
+import Web.HTML.Location as Location
+import Web.HTML.Window as Window
+import Web.URL.URLSearchParams as URLSearchParams
 
 static_content = Page.static_content spec
 start_client = Page.start_client spec
@@ -63,16 +69,32 @@ mainComponent = mkComponent { initialState, eval, render }
   where
   initialState _input =
     { show_editor: false
-    , mb_err_content_builder: Nothing :: Maybe (JsonDecodeError \/ SomeContentBuilder)
+    , mb_err_content_builder: Nothing :: Maybe (String \/ SomeContentBuilder)
     }
 
   eval = mkEval defaultEval { initialize = Just Initialize, handleAction = handleAction }
 
   handleAction = case _ of
     Initialize -> do
-      pure unit
-    OnQueryChange content_builder -> do
-      modify_ _ { mb_err_content_builder = Just (Right content_builder) }
+      window <- HTML.window # liftEffect
+      location <- window # Window.location # liftEffect
+      search <- location # Location.search # liftEffect
+      Console.log (show { search })
+      usp <- URLSearchParams.fromString search # pure
+      usp # URLSearchParams.get "content" # case _ of
+        Nothing -> pure unit
+        Just content_string_ -> do
+          content_string <- content_string_ # decodeURIComponent # maybe (throwError (error "railed to decodeURIComponent")) pure
+          Console.log (show { content_string })
+          case decodeMu content_string :: _ SomeContentBuilder of
+            Left err -> do
+              Console.log "decoded failurely"
+              modify_ _ { mb_err_content_builder = Just (Left (show err)) }
+            Right content -> do
+              Console.log "decoded successfully"
+              modify_ _ { mb_err_content_builder = Just (Right content) }
+    OnQueryChange content -> do
+      modify_ _ { mb_err_content_builder = Just (Right content) }
       pure unit -- TODO
     SetShowEditor_Action show_editor -> do
       modify_ _ { show_editor = show_editor }
@@ -91,26 +113,26 @@ mainComponent = mkComponent { initialState, eval, render }
               [ HU.style [ "padding: 0.5em" ] ]
               [ HH.slot (Proxy :: Proxy "query") unit editorComponent
                   { content:
-                      Grouped Column
-                        ( Styled Title (Literal "This is a simple example to start")
-                            : Named "noteA"
-                            : Named "noteB"
-                            : Styled Block (Styled Quote (Grouped Column (Named "loremIpsum_long" : Nil)))
-                            : Nil
-                        )
+                      case state.mb_err_content_builder of
+                        Just (Right content) -> content
+                        _ -> Hole
                   }
                   case _ of
                     UpdateEditorOutput content -> OnQueryChange content
               ]
           ]
       , HH.div
-          [ HU.style [ "flex-grow: 1", "overflow-y: scroll" ] ]
+          [ HU.style ((if (state.mb_err_content_builder # maybe false (either (const false) (const true))) then [] else [ "max-height: 50%" ]) <> [ "overflow-y: scroll" ]) ]
           [ HH.div
               [ HU.style [ "padding: 0.5em" ] ]
               [ case state.mb_err_content_builder of
                   Nothing -> HH.span_ [ HH.text "<Nothing>" ]
-                  Just (Left err) -> HH.span_ [ HH.text ("[JsonDecodeError] " <> show err) ]
-                  Just (Right content) -> HH.slot_ (Proxy :: Proxy "content") unit subcontentComponent { content }
+                  Just (Left err) -> HH.span_ [ HH.text (show err) ]
+                  Just (Right content) -> HH.div
+                    []
+                    [ HH.pre [ HU.style [ "overflow-x: scroll" ] ] [ HH.text (encodeMu content) ]
+                    , HH.slot_ (Proxy :: Proxy "content") unit subcontentComponent { content }
+                    ]
               ]
           ]
       ]
@@ -126,6 +148,7 @@ data EditorOutput = UpdateEditorOutput SomeContentBuilder
 
 data EditorAction
   = Initialize_EditorAction
+  | Receive_EditorAction EditorInput
   | SetSomeContentBuilder_EditorAction SomeContentBuilder
   | Pass_EditorAction
 
@@ -136,12 +159,15 @@ editorComponent = mkComponent { initialState, eval, render }
     { content: input.content
     }
 
-  eval = mkEval defaultEval { initialize = Just Initialize_EditorAction, handleAction = handleAction }
+  eval = mkEval defaultEval { initialize = Just Initialize_EditorAction, receive = Just <<< Receive_EditorAction, handleAction = handleAction }
 
   handleAction = case _ of
     Initialize_EditorAction -> do
-      { content } <- get
-      H.raise (UpdateEditorOutput content)
+      -- { content } <- get
+      -- H.raise (UpdateEditorOutput content)
+      pure unit
+    Receive_EditorAction input -> do
+      H.put (initialState input)
     SetSomeContentBuilder_EditorAction content -> do
       modify_ _ { content = content }
       H.raise (UpdateEditorOutput content)

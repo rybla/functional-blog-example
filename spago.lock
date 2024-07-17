@@ -12,9 +12,11 @@ workspace:
         - effect
         - halogen
         - homogeneous
+        - js-uri
         - lists
         - maybe
         - node-fs
+        - parsing
         - prelude
         - profunctor-lenses
         - record
@@ -22,6 +24,7 @@ workspace:
         - unicode
         - uuid
         - variant
+        - web-url
       test_dependencies: []
       build_plan:
         - aff
@@ -69,6 +72,7 @@ workspace:
         - invariant
         - js-date
         - js-promise
+        - js-uri
         - lazy
         - lists
         - maybe
@@ -87,6 +91,7 @@ workspace:
         - ordered-collections
         - orders
         - parallel
+        - parsing
         - partial
         - pipes
         - prelude
@@ -119,6 +124,7 @@ workspace:
         - web-storage
         - web-touchevents
         - web-uievents
+        - web-url
   package_set:
     address:
       registry: 55.0.0
@@ -1136,6 +1142,13 @@ packages:
       - functions
       - maybe
       - prelude
+  js-uri:
+    type: registry
+    version: 3.1.0
+    integrity: sha256-3p0ynHveCJmC2CXze+eMBdW/2l5e953Q8XMAKz+jxUo=
+    dependencies:
+      - functions
+      - maybe
   lazy:
     type: registry
     version: 6.0.0
@@ -1329,6 +1342,36 @@ packages:
       - profunctor
       - refs
       - transformers
+  parsing:
+    type: registry
+    version: 10.2.0
+    integrity: sha256-ZDIdMFAKkst57x6BVa1aUWJnS8smoZnXsZ339Aq1mPA=
+    dependencies:
+      - arrays
+      - control
+      - effect
+      - either
+      - enums
+      - foldable-traversable
+      - functions
+      - identity
+      - integers
+      - lazy
+      - lists
+      - maybe
+      - newtype
+      - nullable
+      - numbers
+      - partial
+      - prelude
+      - st
+      - strings
+      - tailrec
+      - transformers
+      - tuples
+      - unfoldable
+      - unicode
+      - unsafe-coerce
   partial:
     type: registry
     version: 4.0.0
@@ -1655,3 +1698,15 @@ packages:
     integrity: sha256-5I+ut9JYno3wowti3vJGs1afKCm1ucppKuy+zhuSyss=
     dependencies:
       - web-html
+  web-url:
+    type: registry
+    version: 2.0.0
+    integrity: sha256-isicTqg0+JZmIK+eD3kwQroOocufYDGZVNIx/wFw488=
+    dependencies:
+      - aff
+      - effect
+      - maybe
+      - partial
+      - prelude
+      - spec
+      - tuples
