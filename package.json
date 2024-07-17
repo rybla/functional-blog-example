@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "build": "spago build",
-    "compile": "pnpm compile:GenerateStaticAssets && pnpm compile:superbuilder",
-    "compile:GenerateStaticAssets": "spago run --main GenerateStaticAssets",
-    "compile:superbuilder": "node superbuilder.js",
-    "compile:Index": "pnpm compile:GenerateStaticAssets && pnpm node builders/index.js",
+    "compile": "pnpm compile.GenerateStaticAssets && pnpm compile.superbuilder",
+    "compile.GenerateStaticAssets": "spago run --main GenerateStaticAssets",
+    "compile.superbuilder": "node superbuilder.js",
+    "compile.Index": "pnpm compile.GenerateStaticAssets && pnpm node builders/index.js",
     "serve": "http-server ./docs"
   },
   "devDependencies": {

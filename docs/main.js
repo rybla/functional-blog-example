@@ -3453,7 +3453,7 @@
     renderContent: function(dictMonadState) {
       var pure14 = pure(dictMonadState.Monad0().Applicative0());
       return function(v) {
-        return pure14([span2([class_("Hole")])([])]);
+        return pure14([div2([class_("Hole")])([])]);
       };
     }
   };

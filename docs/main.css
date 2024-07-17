@@ -36,7 +36,7 @@
 .Style_Block {
   margin: 0.5em;
   padding: 0.5em;
-  box-shadow: 0 0 0.5em 0;
+  box-shadow: 0 0 0.5em 0 black;
 }
 
 .Style_Quote {
@@ -45,4 +45,16 @@
 
 .Style_Code {
   font-family: 'Courier New', Courier, monospace;
+}
+
+.Hole {
+  background-color: orange;
+  min-width: 10em;
+  min-height: 1em;
+  padding: 0.1em;
+  box-shadow: 0 0 0 0.1em black;
+}
+
+.Hole::before {
+  content: "..."
 }

@@ -227,5 +227,5 @@ instance Style Code where
 foreign import data Hole :: ContentKind
 
 instance Content Hole where
-  renderContent _ = pure [ HH.span [ HP.class_ (H.ClassName "Hole") ] [] ]
+  renderContent _ = pure [ HH.div [ HP.class_ (H.ClassName "Hole") ] [] ]
 
