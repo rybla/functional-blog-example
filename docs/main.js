@@ -3610,108 +3610,22 @@
     return $$Proxy.value;
   }();
 
-  // output/Data.Argonaut.Core/foreign.js
-  function stringify(j) {
-    return JSON.stringify(j);
-  }
+  // output/Content.Notes.LoremIpsum/index.js
+  var loremIpsum_long = function(dictApplicative) {
+    return pure(dictApplicative)([div2([])([text("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nunc pulvinar sapien et ligula ullamcorper. Nam aliquam sem et tortor consequat id porta nibh venenatis. Et tortor consequat id porta. Mauris cursus mattis molestie a iaculis at. Molestie at elementum eu facilisis sed odio morbi quis commodo. Placerat in egestas erat imperdiet sed euismod nisi porta. Interdum posuere lorem ipsum dolor sit amet consectetur. Hac habitasse platea dictumst vestibulum rhoncus est. Nisl nisi scelerisque eu ultrices vitae auctor eu augue ut. At varius vel pharetra vel. Pharetra et ultrices neque ornare aenean euismod elementum nisi.")]), div2([])([text("Velit scelerisque in dictum non consectetur a. Enim nunc faucibus a pellentesque sit. Amet nulla facilisi morbi tempus iaculis urna. At ultrices mi tempus imperdiet nulla malesuada pellentesque elit eget. Amet nisl suscipit adipiscing bibendum est. Iaculis eu non diam phasellus vestibulum lorem sed risus. Neque viverra justo nec ultrices. Libero id faucibus nisl tincidunt eget nullam non. Ut porttitor leo a diam sollicitudin tempor. Urna nunc id cursus metus aliquam. Accumsan sit amet nulla facilisi morbi. Erat nam at lectus urna duis convallis convallis tellus. Viverra justo nec ultrices dui. Leo vel fringilla est ullamcorper eget nulla facilisi. Eget felis eget nunc lobortis mattis aliquam faucibus purus. Facilisi etiam dignissim diam quis enim lobortis scelerisque. Eu augue ut lectus arcu bibendum.")]), div2([])([text("A diam maecenas sed enim ut sem viverra aliquet. Ipsum suspendisse ultrices gravida dictum fusce ut placerat orci. Sed risus pretium quam vulputate dignissim suspendisse. Quis imperdiet massa tincidunt nunc. Ullamcorper velit sed ullamcorper morbi tincidunt ornare. Fringilla ut morbi tincidunt augue interdum velit euismod. Leo a diam sollicitudin tempor. Lectus vestibulum mattis ullamcorper velit sed. Id velit ut tortor pretium viverra suspendisse potenti nullam ac. Venenatis urna cursus eget nunc. Lobortis feugiat vivamus at augue. Eleifend donec pretium vulputate sapien nec sagittis aliquam malesuada. Euismod nisi porta lorem mollis aliquam ut porttitor leo.")]), div2([])([text("Pulvinar sapien et ligula ullamcorper malesuada proin. Vulputate mi sit amet mauris commodo quis imperdiet massa. Augue interdum velit euismod in. Magna ac placerat vestibulum lectus mauris ultrices eros in cursus. Sem viverra aliquet eget sit amet tellus. Imperdiet proin fermentum leo vel orci porta non pulvinar neque. Non arcu risus quis varius quam quisque id diam vel. Pretium nibh ipsum consequat nisl vel pretium. At erat pellentesque adipiscing commodo elit at imperdiet dui accumsan. Ut pharetra sit amet aliquam id. Sit amet luctus venenatis lectus magna fringilla. Massa eget egestas purus viverra. Elementum nibh tellus molestie nunc non blandit massa enim. Suspendisse interdum consectetur libero id faucibus nisl tincidunt. Posuere morbi leo urna molestie at elementum. Tristique senectus et netus et malesuada fames ac turpis egestas.")]), div2([])([text("Tristique sollicitudin nibh sit amet commodo nulla facilisi nullam. Augue neque gravida in fermentum. Velit ut tortor pretium viverra suspendisse. Cursus risus at ultrices mi tempus imperdiet nulla. Tristique et egestas quis ipsum suspendisse ultrices gravida dictum fusce. Imperdiet dui accumsan sit amet nulla facilisi morbi. Et pharetra pharetra massa massa ultricies mi quis hendrerit. Ultricies tristique nulla aliquet enim tortor. Tempus urna et pharetra pharetra. Nunc mi ipsum faucibus vitae. Leo a diam sollicitudin tempor id eu nisl nunc mi. Viverra tellus in hac habitasse platea. Sed risus ultricies tristique nulla. Massa sed elementum tempus egestas sed sed. Gravida neque convallis a cras. Venenatis tellus in metus vulputate eu scelerisque felis. Tellus pellentesque eu tincidunt tortor aliquam nulla facilisi cras fermentum. Lacinia at quis risus sed vulputate odio.")])]);
+  };
+  var loremIpsum = function(dictApplicative) {
+    return pure(dictApplicative)([div2([])([text("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nunc pulvinar sapien et ligula ullamcorper. Nam aliquam sem et tortor consequat id porta nibh venenatis. Et tortor consequat id porta. Mauris cursus mattis molestie a iaculis at. Molestie at elementum eu facilisis sed odio morbi quis commodo. Placerat in egestas erat imperdiet sed euismod nisi porta. Interdum posuere lorem ipsum dolor sit amet consectetur. Hac habitasse platea dictumst vestibulum rhoncus est. Nisl nisi scelerisque eu ultrices vitae auctor eu augue ut. At varius vel pharetra vel. Pharetra et ultrices neque ornare aenean euismod elementum nisi.")])]);
+  };
 
-  // output/Data.Argonaut.Decode.Error/index.js
-  var show2 = /* @__PURE__ */ show(showString);
-  var show1 = /* @__PURE__ */ show(showInt);
-  var TypeMismatch2 = /* @__PURE__ */ function() {
-    function TypeMismatch3(value0) {
-      this.value0 = value0;
-    }
-    ;
-    TypeMismatch3.create = function(value0) {
-      return new TypeMismatch3(value0);
-    };
-    return TypeMismatch3;
-  }();
-  var UnexpectedValue = /* @__PURE__ */ function() {
-    function UnexpectedValue2(value0) {
-      this.value0 = value0;
-    }
-    ;
-    UnexpectedValue2.create = function(value0) {
-      return new UnexpectedValue2(value0);
-    };
-    return UnexpectedValue2;
-  }();
-  var AtIndex = /* @__PURE__ */ function() {
-    function AtIndex2(value0, value1) {
-      this.value0 = value0;
-      this.value1 = value1;
-    }
-    ;
-    AtIndex2.create = function(value0) {
-      return function(value1) {
-        return new AtIndex2(value0, value1);
-      };
-    };
-    return AtIndex2;
-  }();
-  var AtKey = /* @__PURE__ */ function() {
-    function AtKey2(value0, value1) {
-      this.value0 = value0;
-      this.value1 = value1;
-    }
-    ;
-    AtKey2.create = function(value0) {
-      return function(value1) {
-        return new AtKey2(value0, value1);
-      };
-    };
-    return AtKey2;
-  }();
-  var Named = /* @__PURE__ */ function() {
-    function Named3(value0, value1) {
-      this.value0 = value0;
-      this.value1 = value1;
-    }
-    ;
-    Named3.create = function(value0) {
-      return function(value1) {
-        return new Named3(value0, value1);
-      };
-    };
-    return Named3;
-  }();
-  var MissingValue = /* @__PURE__ */ function() {
-    function MissingValue2() {
-    }
-    ;
-    MissingValue2.value = new MissingValue2();
-    return MissingValue2;
-  }();
-  var showJsonDecodeError = {
-    show: function(v) {
-      if (v instanceof TypeMismatch2) {
-        return "(TypeMismatch " + (show2(v.value0) + ")");
-      }
-      ;
-      if (v instanceof UnexpectedValue) {
-        return "(UnexpectedValue " + (stringify(v.value0) + ")");
-      }
-      ;
-      if (v instanceof AtIndex) {
-        return "(AtIndex " + (show1(v.value0) + (" " + (show(showJsonDecodeError)(v.value1) + ")")));
-      }
-      ;
-      if (v instanceof AtKey) {
-        return "(AtKey " + (show2(v.value0) + (" " + (show(showJsonDecodeError)(v.value1) + ")")));
-      }
-      ;
-      if (v instanceof Named) {
-        return "(Named " + (show2(v.value0) + (" " + (show(showJsonDecodeError)(v.value1) + ")")));
-      }
-      ;
-      if (v instanceof MissingValue) {
-        return "MissingValue";
-      }
-      ;
-      throw new Error("Failed pattern match at Data.Argonaut.Decode.Error (line 24, column 10 - line 30, column 35): " + [v.constructor.name]);
-    }
+  // output/Content.Notes.NoteA/index.js
+  var noteA = function(dictApplicative) {
+    return pure(dictApplicative)([div_([text("This is NoteA.")])]);
+  };
+
+  // output/Content.Notes.NoteB/index.js
+  var noteB = function(dictApplicative) {
+    return pure(dictApplicative)([div2([])([text("This is NoteB.")])]);
   };
 
   // output/Data.Map.Internal/index.js
@@ -3826,7 +3740,7 @@
     ;
     throw new Error("Failed pattern match at Data.Map.Internal (line 700, column 32 - line 712, column 68): " + [l.constructor.name]);
   };
-  var singleton6 = function(k) {
+  var singleton5 = function(k) {
     return function(v) {
       return new Node(1, 1, k, v, Leaf.value, Leaf.value);
     };
@@ -3860,7 +3774,7 @@
     return function(k, v, l, r) {
       if (l instanceof Leaf) {
         if (r instanceof Leaf) {
-          return singleton6(k)(v);
+          return singleton5(k)(v);
         }
         ;
         if (r instanceof Node && r.value0 > 1) {
@@ -4009,7 +3923,7 @@
       return function(v) {
         var go2 = function(v1) {
           if (v1 instanceof Leaf) {
-            return singleton6(k)(v);
+            return singleton5(k)(v);
           }
           ;
           if (v1 instanceof Node) {
@@ -4249,6 +4163,147 @@
         };
       };
     };
+  };
+
+  // output/Content.Notes/index.js
+  var contentContent_noteB = {
+    renderContent: function(dictMonadState) {
+      var noteB2 = noteB(dictMonadState.Monad0().Applicative0());
+      return function(v) {
+        return noteB2;
+      };
+    }
+  };
+  var contentContent_noteA = {
+    renderContent: function(dictMonadState) {
+      var noteA2 = noteA(dictMonadState.Monad0().Applicative0());
+      return function(v) {
+        return noteA2;
+      };
+    }
+  };
+  var contentContent_loremIpsum = {
+    renderContent: function(dictMonadState) {
+      var loremIpsum2 = loremIpsum(dictMonadState.Monad0().Applicative0());
+      return function(v) {
+        return loremIpsum2;
+      };
+    }
+  };
+  var contentContent_loremIpsum1 = {
+    renderContent: function(dictMonadState) {
+      var loremIpsum_long2 = loremIpsum_long(dictMonadState.Monad0().Applicative0());
+      return function(v) {
+        return loremIpsum_long2;
+      };
+    }
+  };
+  var namedSomeContent = /* @__PURE__ */ function() {
+    return fromFoldable4(ordString)(foldableArray)([new Tuple("noteB", mkSomeContent(contentContent_noteB)($$Proxy.value)), new Tuple("noteA", mkSomeContent(contentContent_noteA)($$Proxy.value)), new Tuple("loremIpsum_long", mkSomeContent(contentContent_loremIpsum1)($$Proxy.value)), new Tuple("loremIpsum", mkSomeContent(contentContent_loremIpsum)($$Proxy.value))]);
+  }();
+
+  // output/Data.Argonaut.Core/foreign.js
+  function stringify(j) {
+    return JSON.stringify(j);
+  }
+
+  // output/Data.Argonaut.Decode.Error/index.js
+  var show2 = /* @__PURE__ */ show(showString);
+  var show1 = /* @__PURE__ */ show(showInt);
+  var TypeMismatch2 = /* @__PURE__ */ function() {
+    function TypeMismatch3(value0) {
+      this.value0 = value0;
+    }
+    ;
+    TypeMismatch3.create = function(value0) {
+      return new TypeMismatch3(value0);
+    };
+    return TypeMismatch3;
+  }();
+  var UnexpectedValue = /* @__PURE__ */ function() {
+    function UnexpectedValue2(value0) {
+      this.value0 = value0;
+    }
+    ;
+    UnexpectedValue2.create = function(value0) {
+      return new UnexpectedValue2(value0);
+    };
+    return UnexpectedValue2;
+  }();
+  var AtIndex = /* @__PURE__ */ function() {
+    function AtIndex2(value0, value1) {
+      this.value0 = value0;
+      this.value1 = value1;
+    }
+    ;
+    AtIndex2.create = function(value0) {
+      return function(value1) {
+        return new AtIndex2(value0, value1);
+      };
+    };
+    return AtIndex2;
+  }();
+  var AtKey = /* @__PURE__ */ function() {
+    function AtKey2(value0, value1) {
+      this.value0 = value0;
+      this.value1 = value1;
+    }
+    ;
+    AtKey2.create = function(value0) {
+      return function(value1) {
+        return new AtKey2(value0, value1);
+      };
+    };
+    return AtKey2;
+  }();
+  var Named = /* @__PURE__ */ function() {
+    function Named3(value0, value1) {
+      this.value0 = value0;
+      this.value1 = value1;
+    }
+    ;
+    Named3.create = function(value0) {
+      return function(value1) {
+        return new Named3(value0, value1);
+      };
+    };
+    return Named3;
+  }();
+  var MissingValue = /* @__PURE__ */ function() {
+    function MissingValue2() {
+    }
+    ;
+    MissingValue2.value = new MissingValue2();
+    return MissingValue2;
+  }();
+  var showJsonDecodeError = {
+    show: function(v) {
+      if (v instanceof TypeMismatch2) {
+        return "(TypeMismatch " + (show2(v.value0) + ")");
+      }
+      ;
+      if (v instanceof UnexpectedValue) {
+        return "(UnexpectedValue " + (stringify(v.value0) + ")");
+      }
+      ;
+      if (v instanceof AtIndex) {
+        return "(AtIndex " + (show1(v.value0) + (" " + (show(showJsonDecodeError)(v.value1) + ")")));
+      }
+      ;
+      if (v instanceof AtKey) {
+        return "(AtKey " + (show2(v.value0) + (" " + (show(showJsonDecodeError)(v.value1) + ")")));
+      }
+      ;
+      if (v instanceof Named) {
+        return "(Named " + (show2(v.value0) + (" " + (show(showJsonDecodeError)(v.value1) + ")")));
+      }
+      ;
+      if (v instanceof MissingValue) {
+        return "MissingValue";
+      }
+      ;
+      throw new Error("Failed pattern match at Data.Argonaut.Decode.Error (line 24, column 10 - line 30, column 35): " + [v.constructor.name]);
+    }
   };
 
   // output/Data.Set/index.js
@@ -7960,44 +8015,6 @@
     return runHalogenAff(bindFlipped12(runUI2(component)({}))(awaitBody));
   };
 
-  // output/Content.Notes.LoremIpsum/index.js
-  var contentLoremIpsumLong = {
-    renderContent: function(dictMonadState) {
-      var pure14 = pure(dictMonadState.Monad0().Applicative0());
-      return function(v) {
-        return pure14([div2([])([text("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nunc pulvinar sapien et ligula ullamcorper. Nam aliquam sem et tortor consequat id porta nibh venenatis. Et tortor consequat id porta. Mauris cursus mattis molestie a iaculis at. Molestie at elementum eu facilisis sed odio morbi quis commodo. Placerat in egestas erat imperdiet sed euismod nisi porta. Interdum posuere lorem ipsum dolor sit amet consectetur. Hac habitasse platea dictumst vestibulum rhoncus est. Nisl nisi scelerisque eu ultrices vitae auctor eu augue ut. At varius vel pharetra vel. Pharetra et ultrices neque ornare aenean euismod elementum nisi.")]), div2([])([text("Velit scelerisque in dictum non consectetur a. Enim nunc faucibus a pellentesque sit. Amet nulla facilisi morbi tempus iaculis urna. At ultrices mi tempus imperdiet nulla malesuada pellentesque elit eget. Amet nisl suscipit adipiscing bibendum est. Iaculis eu non diam phasellus vestibulum lorem sed risus. Neque viverra justo nec ultrices. Libero id faucibus nisl tincidunt eget nullam non. Ut porttitor leo a diam sollicitudin tempor. Urna nunc id cursus metus aliquam. Accumsan sit amet nulla facilisi morbi. Erat nam at lectus urna duis convallis convallis tellus. Viverra justo nec ultrices dui. Leo vel fringilla est ullamcorper eget nulla facilisi. Eget felis eget nunc lobortis mattis aliquam faucibus purus. Facilisi etiam dignissim diam quis enim lobortis scelerisque. Eu augue ut lectus arcu bibendum.")]), div2([])([text("A diam maecenas sed enim ut sem viverra aliquet. Ipsum suspendisse ultrices gravida dictum fusce ut placerat orci. Sed risus pretium quam vulputate dignissim suspendisse. Quis imperdiet massa tincidunt nunc. Ullamcorper velit sed ullamcorper morbi tincidunt ornare. Fringilla ut morbi tincidunt augue interdum velit euismod. Leo a diam sollicitudin tempor. Lectus vestibulum mattis ullamcorper velit sed. Id velit ut tortor pretium viverra suspendisse potenti nullam ac. Venenatis urna cursus eget nunc. Lobortis feugiat vivamus at augue. Eleifend donec pretium vulputate sapien nec sagittis aliquam malesuada. Euismod nisi porta lorem mollis aliquam ut porttitor leo.")]), div2([])([text("Pulvinar sapien et ligula ullamcorper malesuada proin. Vulputate mi sit amet mauris commodo quis imperdiet massa. Augue interdum velit euismod in. Magna ac placerat vestibulum lectus mauris ultrices eros in cursus. Sem viverra aliquet eget sit amet tellus. Imperdiet proin fermentum leo vel orci porta non pulvinar neque. Non arcu risus quis varius quam quisque id diam vel. Pretium nibh ipsum consequat nisl vel pretium. At erat pellentesque adipiscing commodo elit at imperdiet dui accumsan. Ut pharetra sit amet aliquam id. Sit amet luctus venenatis lectus magna fringilla. Massa eget egestas purus viverra. Elementum nibh tellus molestie nunc non blandit massa enim. Suspendisse interdum consectetur libero id faucibus nisl tincidunt. Posuere morbi leo urna molestie at elementum. Tristique senectus et netus et malesuada fames ac turpis egestas.")]), div2([])([text("Tristique sollicitudin nibh sit amet commodo nulla facilisi nullam. Augue neque gravida in fermentum. Velit ut tortor pretium viverra suspendisse. Cursus risus at ultrices mi tempus imperdiet nulla. Tristique et egestas quis ipsum suspendisse ultrices gravida dictum fusce. Imperdiet dui accumsan sit amet nulla facilisi morbi. Et pharetra pharetra massa massa ultricies mi quis hendrerit. Ultricies tristique nulla aliquet enim tortor. Tempus urna et pharetra pharetra. Nunc mi ipsum faucibus vitae. Leo a diam sollicitudin tempor id eu nisl nunc mi. Viverra tellus in hac habitasse platea. Sed risus ultricies tristique nulla. Massa sed elementum tempus egestas sed sed. Gravida neque convallis a cras. Venenatis tellus in metus vulputate eu scelerisque felis. Tellus pellentesque eu tincidunt tortor aliquam nulla facilisi cras fermentum. Lacinia at quis risus sed vulputate odio.")])]);
-      };
-    }
-  };
-  var contentLoremIpsum = {
-    renderContent: function(dictMonadState) {
-      var pure14 = pure(dictMonadState.Monad0().Applicative0());
-      return function(v) {
-        return pure14([div2([])([text("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nunc pulvinar sapien et ligula ullamcorper. Nam aliquam sem et tortor consequat id porta nibh venenatis. Et tortor consequat id porta. Mauris cursus mattis molestie a iaculis at. Molestie at elementum eu facilisis sed odio morbi quis commodo. Placerat in egestas erat imperdiet sed euismod nisi porta. Interdum posuere lorem ipsum dolor sit amet consectetur. Hac habitasse platea dictumst vestibulum rhoncus est. Nisl nisi scelerisque eu ultrices vitae auctor eu augue ut. At varius vel pharetra vel. Pharetra et ultrices neque ornare aenean euismod elementum nisi.")])]);
-      };
-    }
-  };
-
-  // output/Content.Notes.NoteA/index.js
-  var contentNoteA = {
-    renderContent: function(dictMonadState) {
-      var pure14 = pure(dictMonadState.Monad0().Applicative0());
-      return function(v) {
-        return pure14([div_([text("This is NoteA.")])]);
-      };
-    }
-  };
-
-  // output/Content.Notes.NoteB/index.js
-  var contentNoteB = {
-    renderContent: function(dictMonadState) {
-      var pure14 = pure(dictMonadState.Monad0().Applicative0());
-      return function(v) {
-        return pure14([div2([])([text("This is NoteB.")])]);
-      };
-    }
-  };
-
   // output/Data.String.CodePoints/foreign.js
   var hasArrayFrom = typeof Array.from === "function";
   var hasStringIterator = typeof Symbol !== "undefined" && Symbol != null && typeof Symbol.iterator !== "undefined" && typeof String.prototype[Symbol.iterator] === "function";
@@ -8339,7 +8356,7 @@
         return Code.value;
       }
       ;
-      throw new Error("Failed pattern match at SomeContentBuilder (line 151, column 1 - line 151, column 43): " + [x.constructor.name]);
+      throw new Error("Failed pattern match at SomeContentBuilder (line 147, column 1 - line 147, column 43): " + [x.constructor.name]);
     },
     from: function(x) {
       if (x instanceof Title) {
@@ -8366,7 +8383,7 @@
         return new Inr(new Inr(new Inr(new Inr(new Inr(NoArguments.value)))));
       }
       ;
-      throw new Error("Failed pattern match at SomeContentBuilder (line 151, column 1 - line 151, column 43): " + [x.constructor.name]);
+      throw new Error("Failed pattern match at SomeContentBuilder (line 147, column 1 - line 147, column 43): " + [x.constructor.name]);
     }
   };
   var genericShow2 = /* @__PURE__ */ genericShow(genericSomeStyleBuilder_)(/* @__PURE__ */ genericShowSum(/* @__PURE__ */ genericShowConstructor2(TitleIsSymbol))(/* @__PURE__ */ genericShowSum(/* @__PURE__ */ genericShowConstructor2(SectionIsSymbol))(/* @__PURE__ */ genericShowSum(/* @__PURE__ */ genericShowConstructor2(SubsectionIsSymbol))(/* @__PURE__ */ genericShowSum(/* @__PURE__ */ genericShowConstructor2(BlockIsSymbol))(/* @__PURE__ */ genericShowSum(/* @__PURE__ */ genericShowConstructor2(QuoteIsSymbol))(/* @__PURE__ */ genericShowConstructor2(CodeIsSymbol)))))));
@@ -8386,7 +8403,7 @@
         return Row.value;
       }
       ;
-      throw new Error("Failed pattern match at SomeContentBuilder (line 121, column 1 - line 121, column 43): " + [x.constructor.name]);
+      throw new Error("Failed pattern match at SomeContentBuilder (line 117, column 1 - line 117, column 43): " + [x.constructor.name]);
     },
     from: function(x) {
       if (x instanceof Column) {
@@ -8397,7 +8414,7 @@
         return new Inr(NoArguments.value);
       }
       ;
-      throw new Error("Failed pattern match at SomeContentBuilder (line 121, column 1 - line 121, column 43): " + [x.constructor.name]);
+      throw new Error("Failed pattern match at SomeContentBuilder (line 117, column 1 - line 117, column 43): " + [x.constructor.name]);
     }
   };
   var genericShow1 = /* @__PURE__ */ genericShow(genericSomeGroupBuilder_)(/* @__PURE__ */ genericShowSum(/* @__PURE__ */ genericShowConstructor2(ColumnIsSymbol))(/* @__PURE__ */ genericShowConstructor2(RowIsSymbol)));
@@ -8435,9 +8452,6 @@
       return $$Proxy.value;
     };
   };
-  var namedSomeContent = /* @__PURE__ */ function() {
-    return fromFoldable4(ordString)(foldableArray)([new Tuple("Lorem Ipsum", mkSomeContent(contentLoremIpsum)($$Proxy.value)), new Tuple("Lorem Ipsum Long", mkSomeContent(contentLoremIpsumLong)($$Proxy.value)), new Tuple("NoteA", mkSomeContent(contentNoteA)($$Proxy.value)), new Tuple("NoteB", mkSomeContent(contentNoteB)($$Proxy.value))]);
-  }();
   var fromSomeStyleBuilder = function(v) {
     if (v instanceof Title) {
       return pure10(mkSomeStyle2($$Proxy.value));
@@ -8463,7 +8477,7 @@
       return pure10(mkSomeStyle5($$Proxy.value));
     }
     ;
-    throw new Error("Failed pattern match at SomeContentBuilder (line 166, column 24 - line 172, column 51): " + [v.constructor.name]);
+    throw new Error("Failed pattern match at SomeContentBuilder (line 162, column 24 - line 168, column 51): " + [v.constructor.name]);
   };
   var fromSomeGroupBuilder = function(v) {
     if (v instanceof Column) {
@@ -8474,7 +8488,7 @@
       return pure10(mkSomeGroup1($$Proxy.value));
     }
     ;
-    throw new Error("Failed pattern match at SomeContentBuilder (line 136, column 24 - line 138, column 49): " + [v.constructor.name]);
+    throw new Error("Failed pattern match at SomeContentBuilder (line 132, column 24 - line 134, column 49): " + [v.constructor.name]);
   };
   var fromNamedSomeContentBuilder = function(name15) {
     var v = lookup6(name15)(namedSomeContent);
@@ -8486,7 +8500,7 @@
       return pure10(v.value0);
     }
     ;
-    throw new Error("Failed pattern match at SomeContentBuilder (line 180, column 36 - line 182, column 41): " + [v.constructor.name]);
+    throw new Error("Failed pattern match at SomeContentBuilder (line 176, column 36 - line 178, column 41): " + [v.constructor.name]);
   };
   var fromSomeContentListBuilder = function(v) {
     if (v instanceof Nil2) {
@@ -8511,7 +8525,7 @@
       });
     }
     ;
-    throw new Error("Failed pattern match at SomeContentBuilder (line 102, column 30 - line 109, column 58): " + [v.constructor.name]);
+    throw new Error("Failed pattern match at SomeContentBuilder (line 98, column 30 - line 105, column 58): " + [v.constructor.name]);
   };
   var fromSomeContentBuilder = function(v) {
     if (v instanceof Literal) {
@@ -8567,9 +8581,9 @@
       return pure10(mkSomeContent2($$Proxy.value));
     }
     ;
-    throw new Error("Failed pattern match at SomeContentBuilder (line 58, column 26 - line 73, column 53): " + [v.constructor.name]);
+    throw new Error("Failed pattern match at SomeContentBuilder (line 54, column 26 - line 69, column 53): " + [v.constructor.name]);
   };
-  var renderSomeContentBuilder = function($305) {
+  var renderSomeContentBuilder = function($299) {
     return function(v) {
       if (v instanceof Left) {
         return [div2([style3(["padding: 0.5em", "background-color: red"])])([text("[error] invalid SomeContentBuilder: " + v.value0)])];
@@ -8579,8 +8593,8 @@
         return renderFinalSomeContent(v.value0);
       }
       ;
-      throw new Error("Failed pattern match at SomeContentBuilder (line 49, column 55 - line 55, column 62): " + [v.constructor.name]);
-    }(fromSomeContentBuilder($305));
+      throw new Error("Failed pattern match at SomeContentBuilder (line 45, column 55 - line 51, column 62): " + [v.constructor.name]);
+    }(fromSomeContentBuilder($299));
   };
 
   // output/Unsafe/index.js
@@ -8740,7 +8754,7 @@
           return pure11(unit);
         }
         ;
-        throw new Error("Failed pattern match at Content.Pages.Index (line 344, column 22 - line 346, column 46): " + [v1.constructor.name]);
+        throw new Error("Failed pattern match at Content.Pages.Index (line 345, column 22 - line 347, column 46): " + [v1.constructor.name]);
       }
     });
     return mkComponent({
@@ -8816,7 +8830,7 @@
         return pure11(unit);
       }
       ;
-      throw new Error("Failed pattern match at Content.Pages.Index (line 140, column 18 - line 147, column 35): " + [v.constructor.name]);
+      throw new Error("Failed pattern match at Content.Pages.Index (line 141, column 18 - line 148, column 35): " + [v.constructor.name]);
     };
     var $$eval = mkEval({
       handleQuery: defaultEval.handleQuery,
@@ -8849,7 +8863,7 @@
           })(v.value1)])]);
         }
         ;
-        throw new Error("Failed pattern match at Content.Pages.Index (line 287, column 40 - line 317, column 10): " + [v.constructor.name]);
+        throw new Error("Failed pattern match at Content.Pages.Index (line 288, column 40 - line 318, column 10): " + [v.constructor.name]);
       };
     };
     var render_SomeContentBuilder = function(wrap3) {
@@ -8910,7 +8924,7 @@
               return new SetSomeContentBuilder_EditorAction(wrap3(v1.value0.value1));
             }
             ;
-            throw new Error("Failed pattern match at Content.Pages.Index (line 229, column 25 - line 231, column 102): " + [v1.constructor.name]);
+            throw new Error("Failed pattern match at Content.Pages.Index (line 230, column 25 - line 232, column 102): " + [v1.constructor.name]);
           })])(mapWithIndex3(function(i2) {
             return function(option2) {
               return option([selected(isLeft(option2)), value13(show4(i2))])([text(function() {
@@ -8922,13 +8936,13 @@
                   return option2.value0.value0;
                 }
                 ;
-                throw new Error("Failed pattern match at Content.Pages.Index (line 235, column 29 - line 237, column 50): " + [option2.constructor.name]);
+                throw new Error("Failed pattern match at Content.Pages.Index (line 236, column 29 - line 238, column 50): " + [option2.constructor.name]);
               }())]);
             };
           })(options2))]);
         }
         ;
-        throw new Error("Failed pattern match at Content.Pages.Index (line 156, column 36 - line 240, column 12): " + [v.constructor.name]);
+        throw new Error("Failed pattern match at Content.Pages.Index (line 157, column 36 - line 241, column 12): " + [v.constructor.name]);
       };
     };
     var render = function(state3) {
@@ -8942,7 +8956,7 @@
   }();
   var mainComponent = /* @__PURE__ */ function() {
     var render = function(state3) {
-      return div2([style3(["display: flex", "flex-direction: column"])])([div2([onClick(function(v) {
+      return div2([style3(["height: 100vh", "display: flex", "flex-direction: column"])])([div2([onClick(function(v) {
         return new SetShowEditor_Action(!state3.show_editor);
       }), style3(["padding: 0.5em", "align-content: center", "text-align: center"])])([button([])([text(function() {
         if (state3.show_editor) {
@@ -8957,7 +8971,7 @@
         ;
         return ["display: none"];
       }()]))])([div2([style3(["padding: 0.5em"])])([slot2($$Proxy.value)(unit)(editorComponent)({
-        content: new Grouped(Column.value, new Cons2(new Styled(Title.value, new Literal("This is a simple example to start")), new Cons2(new Named2("NoteA"), new Cons2(new Named2("NoteB"), new Cons2(new Styled(Block.value, new Styled(Quote.value, new Grouped(Column.value, new Cons2(new Named2("Lorem Ipsum Long"), Nil2.value)))), Nil2.value)))))
+        content: new Grouped(Column.value, new Cons2(new Styled(Title.value, new Literal("This is a simple example to start")), new Cons2(new Named2("noteA"), new Cons2(new Named2("noteB"), new Cons2(new Styled(Block.value, new Styled(Quote.value, new Grouped(Column.value, new Cons2(new Named2("loremIpsum_long"), Nil2.value)))), Nil2.value)))))
       })(function(v) {
         return new OnQueryChange(v.value0);
       })])]), div2([style3(["flex-grow: 1", "overflow-y: scroll"])])([div2([style3(["padding: 0.5em"])])([function() {
@@ -8975,7 +8989,7 @@
           });
         }
         ;
-        throw new Error("Failed pattern match at Content.Pages.Index (line 109, column 17 - line 112, column 115): " + [state3.mb_err_content_builder.constructor.name]);
+        throw new Error("Failed pattern match at Content.Pages.Index (line 110, column 17 - line 113, column 115): " + [state3.mb_err_content_builder.constructor.name]);
       }()])])]);
     };
     var initialState = function(_input) {
@@ -9021,7 +9035,7 @@
         });
       }
       ;
-      throw new Error("Failed pattern match at Content.Pages.Index (line 70, column 18 - line 77, column 46): " + [v.constructor.name]);
+      throw new Error("Failed pattern match at Content.Pages.Index (line 71, column 18 - line 78, column 46): " + [v.constructor.name]);
     };
     var $$eval = mkEval({
       handleQuery: defaultEval.handleQuery,

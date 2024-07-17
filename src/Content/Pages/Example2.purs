@@ -2,8 +2,6 @@
 module Content.Pages.Example2 where
 
 import Content
-import Content.Notes.NoteA (NoteA)
-import Content.Notes.NoteB (NoteB)
 import Page as Page
 import Type.Proxy (Proxy(..))
 
@@ -20,12 +18,13 @@ spec = Page.Spec
   , content: mkSomeContent
       ( Proxy
           :: Proxy
-               ( Grouped Column
-                   ( NoteA
-                       : NoteB
-                       : Nil
-                   )
-               )
+                --    ( Grouped Column
+                --        ( NoteA
+                --            : NoteB
+                --            : Nil
+                --        )
+                --    )
+                Hole
       )
   }
 

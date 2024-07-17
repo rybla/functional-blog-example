@@ -964,31 +964,6 @@
     return result;
   };
   var replicateImpl = typeof Array.prototype.fill === "function" ? replicateFill : replicatePolyfill;
-  var fromFoldableImpl = /* @__PURE__ */ function() {
-    function Cons2(head2, tail) {
-      this.head = head2;
-      this.tail = tail;
-    }
-    var emptyList = {};
-    function curryCons(head2) {
-      return function(tail) {
-        return new Cons2(head2, tail);
-      };
-    }
-    function listToArray(list) {
-      var result = [];
-      var count = 0;
-      var xs = list;
-      while (xs !== emptyList) {
-        result[count++] = xs.head;
-        xs = xs.tail;
-      }
-      return result;
-    }
-    return function(foldr4, xs) {
-      return listToArray(foldr4(curryCons)(emptyList)(xs));
-    };
-  }();
   var length = function(xs) {
     return xs.length;
   };
@@ -1112,12 +1087,12 @@
   var foldMapDefaultR = function(dictFoldable) {
     var foldr22 = foldr(dictFoldable);
     return function(dictMonoid) {
-      var append6 = append(dictMonoid.Semigroup0());
+      var append5 = append(dictMonoid.Semigroup0());
       var mempty2 = mempty(dictMonoid);
       return function(f) {
         return foldr22(function(x) {
           return function(acc) {
-            return append6(f(x))(acc);
+            return append5(f(x))(acc);
           };
         })(mempty2);
       };
@@ -1132,13 +1107,6 @@
   };
 
   // output/Data.Function.Uncurried/foreign.js
-  var runFn2 = function(fn) {
-    return function(a2) {
-      return function(b2) {
-        return fn(a2, b2);
-      };
-    };
-  };
   var runFn4 = function(fn) {
     return function(a2) {
       return function(b2) {
@@ -1153,9 +1121,6 @@
 
   // output/Data.Array/index.js
   var fromJust2 = /* @__PURE__ */ fromJust();
-  var fromFoldable = function(dictFoldable) {
-    return runFn2(fromFoldableImpl)(foldr(dictFoldable));
-  };
   var findIndex = /* @__PURE__ */ function() {
     return runFn4(findIndexImpl)(Just.create)(Nothing.value);
   }();
@@ -1427,9 +1392,6 @@
     }
     ;
     return false;
-  };
-  var fromFoldable2 = function(dictFoldable) {
-    return foldr(dictFoldable)(Cons.create)(Nil.value);
   };
 
   // output/Halogen.Query.Input/index.js
@@ -2511,14 +2473,8 @@
   };
 
   // output/Halogen.HTML.Core/index.js
-  var HTML = function(x) {
-    return x;
-  };
   var toPropValue = function(dict) {
     return dict.toPropValue;
-  };
-  var text = function($29) {
-    return HTML(Text.create($29));
   };
   var prop = function(dictIsProp) {
     var toPropValue1 = toPropValue(dictIsProp);
@@ -2547,7 +2503,6 @@
     return element(Nothing.value);
   }();
   var div2 = /* @__PURE__ */ element2("div");
-  var div_ = /* @__PURE__ */ div2([]);
 
   // output/Halogen.HTML.Properties/index.js
   var unwrap2 = /* @__PURE__ */ unwrap();
@@ -2563,9 +2518,6 @@
   }();
 
   // output/Content/index.js
-  var fromFoldable3 = /* @__PURE__ */ fromFoldable(foldableList);
-  var append2 = /* @__PURE__ */ append(semigroupList);
-  var fromFoldable1 = /* @__PURE__ */ fromFoldable2(foldableArray);
   var monadStateStateT2 = /* @__PURE__ */ monadStateStateT(monadIdentity);
   var Initialize_ContentAction = /* @__PURE__ */ function() {
     function Initialize_ContentAction2() {
@@ -2574,25 +2526,11 @@
     Initialize_ContentAction2.value = new Initialize_ContentAction2();
     return Initialize_ContentAction2;
   }();
-  var groupColumn = {
-    renderGroup: function(dictMonadState) {
-      var Monad0 = dictMonadState.Monad0();
-      var bind6 = bind(Monad0.Bind1());
-      var pure10 = pure(Monad0.Applicative0());
-      return function(v) {
-        return function(mhs) {
-          return bind6(mhs)(function(hs) {
-            return pure10([div2([class_("Group_Column")])(fromFoldable3(hs))]);
-          });
-        };
-      };
-    }
-  };
-  var contentListNil = {
-    renderContentList: function(dictMonadState) {
+  var contentHole = {
+    renderContent: function(dictMonadState) {
       var pure10 = pure(dictMonadState.Monad0().Applicative0());
-      return function(_cs) {
-        return pure10(Nil.value);
+      return function(v) {
+        return pure10([div2([class_("Hole")])([])]);
       };
     }
   };
@@ -2603,51 +2541,8 @@
       });
     };
   };
-  var renderGroup = function(dict) {
-    return dict.renderGroup;
-  };
-  var renderContentList = function(dict) {
-    return dict.renderContentList;
-  };
-  var contentGrouped = function(dictGroup) {
-    var renderGroup1 = renderGroup(dictGroup);
-    return function(dictContentList) {
-      var renderContentList1 = renderContentList(dictContentList);
-      return {
-        renderContent: function(dictMonadState) {
-          var renderGroup2 = renderGroup1(dictMonadState);
-          var renderContentList2 = renderContentList1(dictMonadState);
-          return function(v) {
-            return renderGroup2($$Proxy.value)(renderContentList2($$Proxy.value));
-          };
-        }
-      };
-    };
-  };
   var renderContent = function(dict) {
     return dict.renderContent;
-  };
-  var contentListCons = function(dictContent) {
-    var renderContent1 = renderContent(dictContent);
-    return function(dictContentList) {
-      var renderContentList1 = renderContentList(dictContentList);
-      return {
-        renderContentList: function(dictMonadState) {
-          var Monad0 = dictMonadState.Monad0();
-          var bind6 = bind(Monad0.Bind1());
-          var renderContent2 = renderContent1(dictMonadState);
-          var renderContentList2 = renderContentList1(dictMonadState);
-          var pure10 = pure(Monad0.Applicative0());
-          return function(_cs) {
-            return bind6(renderContent2($$Proxy.value))(function(h) {
-              return bind6(renderContentList2($$Proxy.value))(function(hs) {
-                return pure10(append2(fromFoldable1(h))(hs));
-              });
-            });
-          };
-        }
-      };
-    };
   };
   var mkSomeContent = function(dictContent) {
     return function(x) {
@@ -2668,26 +2563,6 @@
   var renderFinalSomeContent = /* @__PURE__ */ unSomeContent(function(dictContent) {
     return renderFinalContent(dictContent);
   });
-
-  // output/Content.Notes.NoteA/index.js
-  var contentNoteA = {
-    renderContent: function(dictMonadState) {
-      var pure10 = pure(dictMonadState.Monad0().Applicative0());
-      return function(v) {
-        return pure10([div_([text("This is NoteA.")])]);
-      };
-    }
-  };
-
-  // output/Content.Notes.NoteB/index.js
-  var contentNoteB = {
-    renderContent: function(dictMonadState) {
-      var pure10 = pure(dictMonadState.Monad0().Applicative0());
-      return function(v) {
-        return pure10([div2([])([text("This is NoteB.")])]);
-      };
-    }
-  };
 
   // output/Effect.Aff/foreign.js
   var Aff = function() {
@@ -4870,13 +4745,13 @@
   var empty6 = /* @__PURE__ */ function() {
     return CatNil.value;
   }();
-  var append3 = link;
+  var append2 = link;
   var semigroupCatList = {
-    append: append3
+    append: append2
   };
   var snoc3 = function(cat) {
     return function(a2) {
-      return append3(cat)(new CatCons(a2, empty5));
+      return append2(cat)(new CatCons(a2, empty5));
     };
   };
 
@@ -4893,7 +4768,7 @@
       return val;
     };
   };
-  var append4 = /* @__PURE__ */ append(semigroupCatList);
+  var append3 = /* @__PURE__ */ append(semigroupCatList);
   var Free = /* @__PURE__ */ function() {
     function Free2(value0, value1) {
       this.value0 = value0;
@@ -4939,7 +4814,7 @@
       };
       var concatF = function(v22) {
         return function(r) {
-          return new Free(v22.value0, append4(v22.value1)(r));
+          return new Free(v22.value0, append3(v22.value1)(r));
         };
       };
       if (v.value0 instanceof Return) {
@@ -5068,7 +4943,7 @@
   // output/Halogen.Subscription/index.js
   var $$void4 = /* @__PURE__ */ $$void(functorEffect);
   var bind3 = /* @__PURE__ */ bind(bindEffect);
-  var append5 = /* @__PURE__ */ append(semigroupArray);
+  var append4 = /* @__PURE__ */ append(semigroupArray);
   var traverse_2 = /* @__PURE__ */ traverse_(applicativeEffect);
   var traverse_1 = /* @__PURE__ */ traverse_2(foldableArray);
   var unsubscribe = function(v) {
@@ -5092,7 +4967,7 @@
       emitter: function(k) {
         return function __do2() {
           modify_(function(v) {
-            return append5(v)([k]);
+            return append4(v)([k]);
           })(subscribers)();
           return modify_(deleteBy(unsafeRefEq)(k))(subscribers);
         };
@@ -6439,7 +6314,7 @@
       title: "Example2",
       static_content: "This is a placeholder for Example2.",
       stylesheet_hrefs: ["../main.css"],
-      content: mkSomeContent(contentGrouped(groupColumn)(contentListCons(contentNoteA)(contentListCons(contentNoteB)(contentListNil))))($$Proxy.value)
+      content: mkSomeContent(contentHole)($$Proxy.value)
     };
   }();
   var start_client2 = /* @__PURE__ */ start_client(spec);

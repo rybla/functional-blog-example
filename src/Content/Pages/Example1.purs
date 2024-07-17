@@ -1,8 +1,7 @@
 --props { "public_path": "example1" }
 module Content.Pages.Example1 where
 
-import Content (mkSomeContent)
-import Content.Notes.NoteA (NoteA)
+import Content (Hole, mkSomeContent)
 import Page as Page
 import Type.Proxy (Proxy(..))
 
@@ -19,6 +18,6 @@ spec = Page.Spec
   , content: mkSomeContent
       ( Proxy
           :: Proxy
-               NoteA
+               Hole -- NoteA
       )
   }

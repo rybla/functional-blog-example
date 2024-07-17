@@ -4,9 +4,7 @@ import Content
 import Prelude
 import Prim hiding (Row)
 
-import Content.Notes.LoremIpsum (LoremIpsum, LoremIpsumLong)
-import Content.Notes.NoteA (NoteA)
-import Content.Notes.NoteB (NoteB)
+import Content.Notes (namedSomeContent)
 import Control.Monad.Error.Class (throwError)
 import Data.Argonaut (class DecodeJson, class EncodeJson)
 import Data.Argonaut.Decode.Generic (genericDecodeJson)
@@ -14,11 +12,9 @@ import Data.Argonaut.Encode.Generic (genericEncodeJson)
 import Data.Either (Either(..))
 import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
-import Data.Map (Map)
 import Data.Map as Map
 import Data.Maybe (Maybe(..))
 import Data.Show.Generic (genericShow)
-import Data.Tuple.Nested ((/\))
 import Halogen.HTML as HH
 import HalogenUtils as HU
 import Type.Prelude (Proxy(..), reifySymbol)
@@ -180,12 +176,4 @@ fromNamedSomeContentBuilder :: String -> Result SomeContent
 fromNamedSomeContentBuilder name = case Map.lookup name namedSomeContent of
   Nothing -> throwError ("unknown name: " <> show name)
   Just some_content -> pure some_content
-
-namedSomeContent :: Map String SomeContent
-namedSomeContent = Map.fromFoldable
-  [ "Lorem Ipsum" /\ mkSomeContent (Proxy :: Proxy LoremIpsum)
-  , "Lorem Ipsum Long" /\ mkSomeContent (Proxy :: Proxy LoremIpsumLong)
-  , "NoteA" /\ mkSomeContent (Proxy :: Proxy NoteA)
-  , "NoteB" /\ mkSomeContent (Proxy :: Proxy NoteB)
-  ]
 

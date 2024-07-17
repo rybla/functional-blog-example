@@ -4,12 +4,14 @@
   "license": "ISC",
   "type": "module",
   "scripts": {
-    "build": "spago build",
-    "compile": "pnpm compile.GenerateStaticAssets && pnpm compile.superbuilder",
-    "compile.GenerateStaticAssets": "spago run --main GenerateStaticAssets",
-    "compile.superbuilder": "node superbuilder.js",
-    "compile.Index": "pnpm compile.GenerateStaticAssets && pnpm node builders/index.js",
-    "serve": "http-server ./docs"
+    "generate.GenerateNotes": "spago run --main GenerateNotes",
+    "generate.GenerateStaticAssets": "spago run --main GenerateStaticAssets",
+    "generate": "pnpm generate.GenerateNotes && pnpm generate.GenerateStaticAssets",
+    "build": "pnpm generate.GenerateNotes && pnpm generate.GenerateStaticAssets && node superbuilder.js",
+    "build.Index": "pnpm generate.GenerateNotes && pnpm generate.GenerateStaticAssets && node builders/index.js",
+    "serve": "http-server ./docs",
+    "launch": "pnpm build && pnpm serve",
+    "launch.Index": "pnpm build.Index && pnpm serve"
   },
   "devDependencies": {
     "esbuild": "^0.23.0",

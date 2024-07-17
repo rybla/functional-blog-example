@@ -2473,14 +2473,8 @@
   };
 
   // output/Halogen.HTML.Core/index.js
-  var HTML = function(x) {
-    return x;
-  };
   var toPropValue = function(dict) {
     return dict.toPropValue;
-  };
-  var text = function($29) {
-    return HTML(Text.create($29));
   };
   var prop = function(dictIsProp) {
     var toPropValue1 = toPropValue(dictIsProp);
@@ -2509,7 +2503,6 @@
     return element(Nothing.value);
   }();
   var div2 = /* @__PURE__ */ element2("div");
-  var div_ = /* @__PURE__ */ div2([]);
 
   // output/Halogen.HTML.Properties/index.js
   var unwrap2 = /* @__PURE__ */ unwrap();
@@ -2533,6 +2526,14 @@
     Initialize_ContentAction2.value = new Initialize_ContentAction2();
     return Initialize_ContentAction2;
   }();
+  var contentHole = {
+    renderContent: function(dictMonadState) {
+      var pure10 = pure(dictMonadState.Monad0().Applicative0());
+      return function(v) {
+        return pure10([div2([class_("Hole")])([])]);
+      };
+    }
+  };
   var unSomeContent = function(k1) {
     return function(v) {
       return v(function(dictContent) {
@@ -2562,16 +2563,6 @@
   var renderFinalSomeContent = /* @__PURE__ */ unSomeContent(function(dictContent) {
     return renderFinalContent(dictContent);
   });
-
-  // output/Content.Notes.NoteA/index.js
-  var contentNoteA = {
-    renderContent: function(dictMonadState) {
-      var pure10 = pure(dictMonadState.Monad0().Applicative0());
-      return function(v) {
-        return pure10([div_([text("This is NoteA.")])]);
-      };
-    }
-  };
 
   // output/Effect.Aff/foreign.js
   var Aff = function() {
@@ -6323,7 +6314,7 @@
       title: "Example1",
       static_content: "This is a placeholder.",
       stylesheet_hrefs: ["../main.css"],
-      content: mkSomeContent(contentNoteA)($$Proxy.value)
+      content: mkSomeContent(contentHole)($$Proxy.value)
     };
   }();
   var start_client2 = /* @__PURE__ */ start_client(spec);

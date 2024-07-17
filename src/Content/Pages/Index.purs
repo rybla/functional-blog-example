@@ -5,6 +5,7 @@ import Content
 import Prelude
 import SomeContentBuilder
 
+import Content.Notes (namedSomeContent)
 import Control.Monad.State.Class (get, put)
 import Data.Argonaut (JsonDecodeError)
 import Data.Array as Array
@@ -78,7 +79,7 @@ mainComponent = mkComponent { initialState, eval, render }
 
   render state =
     HH.div
-      [ HU.style [ "display: flex", "flex-direction: column" ] ]
+      [ HU.style [ "height: 100vh", "display: flex", "flex-direction: column" ] ]
       [ HH.div
           [ HE.onClick (\_ -> SetShowEditor_Action (not state.show_editor))
           , HU.style [ "padding: 0.5em", "align-content: center", "text-align: center" ]
@@ -92,9 +93,9 @@ mainComponent = mkComponent { initialState, eval, render }
                   { content:
                       Grouped Column
                         ( Styled Title (Literal "This is a simple example to start")
-                            : Named "NoteA"
-                            : Named "NoteB"
-                            : Styled Block (Styled Quote (Grouped Column (Named "Lorem Ipsum Long" : Nil)))
+                            : Named "noteA"
+                            : Named "noteB"
+                            : Styled Block (Styled Quote (Grouped Column (Named "loremIpsum_long" : Nil)))
                             : Nil
                         )
                   }
@@ -212,7 +213,7 @@ editorComponent = mkComponent { initialState, eval, render }
           [ Left unit ] <>
             ( Right <$>
                 [ "Literal" /\ Literal ""
-                , "Named" /\ Named "Lorem Ipsum"
+                , "Named" /\ Named "loremIpsum"
                 , "Grouped" /\ Grouped Column Nil
                 , "Styled" /\ Styled Quote Hole
                 ]
